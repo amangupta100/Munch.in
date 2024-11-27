@@ -10,9 +10,12 @@ require("dotenv").config()
 mongConn()
 
 app.use(express.json())
-app.use(cors({
-    origin:process.env.frontend_URL, // Replace with your frontend URL
-}))
+
+const corsOptions = {
+    origin:process.env.frontend_URL , // Replace with your frontend's URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  };
+app.use(cors(corsOptions))
 app.use(cookieParser())
 app.use("/auth",authRouter)
 app.use("/user",Details)
