@@ -11,7 +11,7 @@ mongConn()
 
 app.use(express.json())
 app.use(cors({
-    origin: 'https://munch-in-gyvv.vercel.app', // Replace with your frontend URL
+    origin:process.env.frontend_URL, // Replace with your frontend URL
 }))
 app.use(cookieParser())
 app.use("/auth",authRouter)
