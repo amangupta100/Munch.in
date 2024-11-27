@@ -7,5 +7,6 @@ router.post("/signUp",signUpValidation,signUp)
 router.post("/login",loginValidation,login)
 router.get("/logout",logout)
 router.post("/google",googleLogin)
+router.get("/checking",(req,res)=>res.send("checking api"))
 
 module.exports = router
