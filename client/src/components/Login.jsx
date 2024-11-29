@@ -18,6 +18,7 @@ export const Login = () =>{
 
     const [vis,setVis] = useState(false)
     const [loading,setLoading] = useState(false)
+    const [loadGoogl,setloadGoogl] = useState(false)
 
     const [inpVal,setInpVal] = useState({email:"",password:""})
     const navigate = useNavigate()
@@ -61,6 +62,7 @@ export const Login = () =>{
         const authGoogle = getAuth(app)
         const result = await signInWithPopup(authGoogle,provider)
         
+        setloadGoogl(true)
         const resFron = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/google`,{
             method:"POST",
             headers:{
@@ -74,6 +76,7 @@ export const Login = () =>{
         })
 
         const respBack = await resFron.json()
+        setloadGoogl(false)
         const {message,success} = respBack
         navigate("/")
         SuccessToast("Logged in successfully")
@@ -137,7 +140,10 @@ export const Login = () =>{
        
         </form>
         <button onClick={handleGoogleAuth} className="flex items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300">
-        <FcGoogle className="text-2xl"/>
+        {
+            loadGoogl && <MoonLoader size={20} />
+        }
+        <FcGoogle className="text-2xl ml-3"/>
        <h1 className="ml-2">Continue With Google</h1>
         </button>
         </div>

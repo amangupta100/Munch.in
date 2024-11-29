@@ -118,7 +118,7 @@ export const Navbar =() =>{
 
        </div>
 
-       <div className="w-full sticky z-30 top-0 bg-white shadow-md shadow-gray-200 flex items-center justify-between lD:px-16 px-24 h-[75px] tb:px-12 lm:px-6 lD:h-[68px]">
+       <div className="w-full sticky z-30 top-0 bg-white shadow-md shadow-gray-200 flex items-center justify-between lD:px-16 px-24 h-[75px] tb:px-12 lm:px-4 lD:h-[68px]">
         
         <div className="flex items-center gap-12 lD:gap-7 lm:gap-4">
                 <NavLink to="/">
@@ -126,7 +126,7 @@ export const Navbar =() =>{
                 </NavLink>
                 <div onClick={()=>setVis(!visible)} className="flex  hover:text-orange-500 items-center cursor-pointer">
                 <h1 className='text-lg lm:text-sm border-b-black border-b-[2px] hover:border-b-orange-400 transition-all duration-300 mb-2 font-semibold'>Other</h1>
-                <h1 className='text-[13px] text-zinc-500 hover:text-orange-500 ml-3'> {addr?.length>35?addr.slice(0,35):addr} </h1>
+                <h1 className='text-[13px] text-zinc-500 hover:text-orange-500 ml-3 lm:line-clamp-1'> {addr?.length>35?addr.slice(0,35):addr} </h1>
                 <IoIosArrowDown className='text-xl hover:text-orange-400'/>
                 </div>
                 </div>

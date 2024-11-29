@@ -65,7 +65,7 @@ export const RestMenu = () =>{
         
         <div className="w-full">
 
-        <div className="w-[800px] lD:w-[870px] mtb:w-[640px] lm:w-[430px] pt-8 mx-auto">
+        <div className="w-[800px] lD:w-[870px] mtb:w-[640px] lm:w-[370px] mdm:w-[360px] pt-8 mx-auto">
         <p className="text-[10px]"> <NavLink to="/"><span className="text-gray-400">Home / </span></NavLink>  <NavLink to="/"><span className="text-gray-400">{resinfo.city}</span></NavLink> / {resinfo.name}</p>
         <h1 className="text-2xl font-extrabold mt-8"> {resinfo.name} </h1>
 

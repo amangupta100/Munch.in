@@ -24,12 +24,12 @@ const details = (req,res) =>{
 
 const updatedDetails =async (req,res) =>{
 const {data,id} = req.body
-const result =await await userModel.findByIdAndUpdate(
-    id,
-    { $set: { addresses: data } }, // Update the profile property
-    { new: true, runValidators: true } // Return the updated document and run validators
-  );
+const result =await userModel.findById(id)
 if(!result) res.json({success:false,message:"User not found"})
-else res.json({success:true,message:"Address Updated Successfully",token:genToken(result.name,result.addresses.pincode,result.addresses.address,result.addresses.number,result._id,result.addresses.State,result.addresses.city)})
+else{
+    result.addresses.push(data);
+    await result.save();
+    res.json({success:true,message:"Address Updated Successfully",token:genToken(result.name,result.addresses.pincode,result.addresses.address,result.addresses.number,result._id,result.addresses.State,result.addresses.city)})
+}
 }
 module.exports = {details,updatedDetails}

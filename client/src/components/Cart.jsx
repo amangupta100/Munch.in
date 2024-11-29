@@ -39,7 +39,7 @@ export const Cart = () =>{
 
 
 <div className={`ml-12 lD:ml-0`}>
-<h1 className="text-4xl font-semibold">Your Bag</h1>
+<h1 className="text-4xl font-semibold lm:font-normal lm:text-2xl lm:first-letter:text-4xl lm:first-letter:font-extrabold">Your Shopping Bag</h1>
  <h1 className="mt-3 font-semibold">TOTAL ({cartData.length} items) ₹{totalPrice}</h1>
  <h1>Items in your bag are not reserved — check out now to make them yours.</h1>
 </div>

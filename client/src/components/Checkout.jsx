@@ -9,8 +9,11 @@ function UserDetails() {
 const [userDetails,setUserDetails] = useState([])
 const [formDet,setForDetails] = useState({number:"",pincode:"",locality:"",address:"",city:"",State:""})
 const {auth,setAuth} = useContext(AuthenContext)
+const [loading,setLoading] = useState(false)
 const navigate = useNavigate()
 
+console.log(auth)
+console.log(userDetails)
 
 const handleFormDet = (value,name) =>{
 setForDetails({...formDet,[name]:value})
@@ -18,7 +21,7 @@ setForDetails({...formDet,[name]:value})
 
 useEffect(()=>{
  const fetchDetail =async () =>{
-  const url = await fetch("http://localhost:8080/user/details",{
+  const url = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/details`,{
     method:"POST",body:JSON.stringify({token:auth.token}),headers: {
       'Content-Type': 'application/json',
     },
@@ -33,27 +36,27 @@ useEffect(()=>{
   }
  }
  fetchDetail()
-},[])
+},[auth])
 
 const handleDetSumbit =async (e) =>{
   e.preventDefault()
   const {number,pincode,locality,address,city,State} = formDet
   if(number.length==10 && pincode && locality && address && city.length && State.length){
 
-   const url = await  fetch(`${import.meta.BACKEND_BASE_URL}/user/updatedDetails`,{
+    setLoading(true)
+   const url = await  fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/updatedDetails`,{
     method:"POST",body:JSON.stringify({data:formDet,id:userDetails.id}),headers: {
       'Content-Type': 'application/json',
     },
    })
-   
-   setLoading(true)
 
    const response = await url.json()
    const {success,message} = response
+   setLoading(false)
    if(success){
-    setLoading(false)
     SuccessToast(message)
     setAuth({...auth,[auth.token]:response.token})
+    console.log(auth,userDetails)
    }
    else{
     ErrorToast(message)
@@ -71,7 +74,7 @@ const handleDetSumbit =async (e) =>{
       <h1 className='text-lg font-semibold text-white'>Delivery Address</h1>
     </div>
 
-  {userDetails.addresses?
+  {userDetails.addresses?.length>0?
   <div className='p-4 bg-white w-1/2 mx-4 my-4 rounded-lg'>
    
     <h1 className='text-lg'>Saved Address</h1>
@@ -94,7 +97,7 @@ const handleDetSumbit =async (e) =>{
     
     <div className="px-4 py-4">
       <h1 className='uppercase font-semibold text-lg'>Add a new Address</h1>
-      <form className='mt-3 flex flex-col gap-5 w-[90%]'>
+      <form className='mt-3 flex flex-col gap-5 w-[100%]'>
 
        <div className="flex gap-6 items-center w-full">
        <input type="text" className='cursor-not-allowed bg-zinc-100 text-zinc-400 px-5 py-3 rounded-lg focus:outline-none ' readOnly value={userDetails?.name} />
@@ -121,9 +124,12 @@ const handleDetSumbit =async (e) =>{
        </select>
 
        </div>
-      <button onClick={handleDetSumbit} className='bg-violet-300 rounded-lg cursor-pointer hover:bg-violet-700 transition-all hover:text-white w-1/4 duration-200 ease-in-out flex items-center justify-center py-3'>
-      {loading && <MoonLoader size={20}/>} <h1 className='ml-3'>Submit and Deliver Here</h1>
-      </button>
+       <button onClick={handleDetSumbit} className="w-full flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+        {
+            loading && <MoonLoader size={20} />
+        }
+        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>Submit and Deliver Here</h1>
+        </button>
       </form>
     </div>
 

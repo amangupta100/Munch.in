@@ -14,7 +14,7 @@ export default {
       "mtb":{'max':"690px"},
       "vlm":{"max":"600px"},
       'lm': {'max': '486px'},
-      'mdm': {'max': '375px'},
+      'mdm': {'max': '420px'},
       'sm': {'max': '320px'},
     }
   },
