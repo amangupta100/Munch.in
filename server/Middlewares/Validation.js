@@ -8,7 +8,7 @@ const Schema = Joi.object({
 })
 const {error} = Schema.validate(req.body)
 if(error){
-    return res.status(400).json({message:"Bad Request",error})
+    return res.status(400).json({message:error.message,error})
 }
 next()
 }
@@ -20,7 +20,7 @@ const loginValidation = (req,res,next) =>{
     })
     const {error} = Schema.validate(req.body)
     if(error){
-        return res.status(400).json({message:"Bad Request",error})
+        return res.status(400).json({message:error.message,error})
     }
     next()
 }

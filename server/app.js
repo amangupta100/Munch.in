@@ -13,7 +13,7 @@ app.use(express.json())
 
 const corsOptions = {
     origin:process.env.frontend_URL , // Replace with your frontend's URL
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+   
   };
 app.use(cors(corsOptions))
 app.use(cookieParser())

@@ -3,6 +3,7 @@ import { OnyourMind } from "./OnyourMInd";
 import { Toprest } from "./Toprest";
 import { OnlineFoodDel } from "./OnlineFoodDel";
 import { Coordinate } from "../context/sideOpen";
+import { FrontPage } from "./FrontPage";
 
 export const MainPage = () =>{
     const {coord:{lat,lng}} = useContext(Coordinate)
@@ -40,10 +41,10 @@ export const MainPage = () =>{
         <div className="w-full">
             
       
-        <div className="w-[75%] lD:w-[89%] mx-auto mt-5 overflow-hidden">
+        <div className="w-[75%] relative lD:w-[89%] mx-auto mt-5 overflow-hidden">
 
  {
-    onyourmind.length>0 ? <OnyourMind favdish={onyourmind}/> :null
+    onyourmind.length>0 ? <OnyourMind favdish={onyourmind}/> :<FrontPage/>
  }
   
      <Toprest heading={head} favdish={topres}/>

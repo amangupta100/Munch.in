@@ -7,6 +7,7 @@ import { ErrorToast, SuccessToast } from "./NotToast";
 import { AuthenContext } from "../context/Authen";
 import { ParamCont } from "../context/ParamCont";
 import { IoMdArrowBack } from "react-icons/io";
+import MoonLoader from "react-spinners/MoonLoader";
 
 export const SignUp = () =>{
     const navigate = useNavigate()
@@ -16,6 +17,7 @@ export const SignUp = () =>{
     })
     const {auth,setAuth} = useContext(AuthenContext)
     const {Paramid} = useContext(ParamCont)
+    const [loading,setLoading] = useState(false)
 
     const handleInpChange = (name,val) =>{
     setInpVal({...inpval,[name]:val})
@@ -28,7 +30,7 @@ export const SignUp = () =>{
         return ErrorToast("All inputs are required")
     }
     try{
-
+    setLoading(true)
     const data =await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/signUp`,{
         method:"POST",
         headers:{
@@ -39,6 +41,7 @@ export const SignUp = () =>{
     const response =await data.json()
  
     const {success,message} = response
+    setLoading(false)
     if(success){
         SuccessToast(message)
         navigate("/login")
@@ -66,7 +69,7 @@ export const SignUp = () =>{
         <h1 className="text-xl text-center font-bold mtb:text-2xl">Register User</h1>
         <div className="">
 
-        <form action="" className="flex flex-col gap-2 mt-5" onSubmit={handleFormSubmit}>
+        <form action="" className="flex flex-col gap-2 mt-5">
 
         <div className="mb-6">
             <h1 className="text-lg font-semibold">Name</h1>
@@ -100,7 +103,12 @@ export const SignUp = () =>{
         </div>
 
         <h1 className="mt-4">Already have an account ? <NavLink to="/login" className="text-blue-500 ml-1 font-semibold"> Login </NavLink> </h1>
-        <input type="submit" value="Register User" className="w-full cursor-pointer mt-3 bg-violet-400 rounded-xl text-white py-3 hover:bg-violet-600 transition-all duration-300" />
+        <button onClick={handleFormSubmit} className="w-full flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+        {
+            loading && <MoonLoader size={20} />
+        }
+        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>SignUp User</h1>
+        </button>
         </form>
 
         </div>

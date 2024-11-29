@@ -10,12 +10,15 @@ import { ParamCont } from "../context/ParamCont";
 import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import {app}  from "./AuthGoogle";
 import { AuthenContext } from "../context/Authen";
+import MoonLoader from "react-spinners/MoonLoader"
 
 export const Login = () =>{
    
     const {Paramid} = useContext(ParamCont)
 
     const [vis,setVis] = useState(false)
+    const [loading,setLoading] = useState(false)
+
     const [inpVal,setInpVal] = useState({email:"",password:""})
     const navigate = useNavigate()
     const {auth,setAuth} = useContext(AuthenContext)
@@ -27,7 +30,7 @@ export const Login = () =>{
     const handleFormSubmit =async (e) =>{
     e.preventDefault()
     try{
-
+   setLoading(true)
    const data = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/login`,{
     method:"POST",
     headers:{
@@ -37,6 +40,7 @@ export const Login = () =>{
    })
    const response = await data.json()
    const {success,message} = response
+   setLoading(false)
    if(success){
        SuccessToast(message)
        navigate("/")
@@ -95,7 +99,7 @@ export const Login = () =>{
         <h1 className="text-xl text-center font-bold">Login User</h1>
         <div className="">
 
-        <form action="" className="flex flex-col gap-2 mt-5" onSubmit={handleFormSubmit}>
+        <form action="" className="flex flex-col gap-2 mt-5">
             
         <div className="mb-6">
             <h1 className="text-lg font-semibold">Email</h1>
@@ -123,7 +127,12 @@ export const Login = () =>{
         </div>
 
         <h1 className="mt-4">Don't have any account yet ? <NavLink to="/signUp" className="text-blue-500 ml-1 font-semibold"> SignUp </NavLink> </h1>
-        <input type="submit" value="Login User" className="w-full cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-400 rounded-xl text-white py-3 hover:bg-violet-600 transition-all duration-300" />
+        <button onClick={handleFormSubmit} className="w-full flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+        {
+            loading && <MoonLoader size={20} />
+        }
+        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>Login User</h1>
+        </button>
         <h1 className="text-lg text-center">Or</h1>
        
         </form>
