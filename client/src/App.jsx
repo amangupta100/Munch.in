@@ -12,6 +12,8 @@ import { ParamCont } from "./context/ParamCont"
 import { ComingSoon } from "./components/ComingSoon"
 import { AuthenContext } from "./context/Authen"
 import { Checkout } from "./components/Checkout"
+import { EmailVerf } from "./context/EmailVerf"
+import { VeriBoxCont } from "./context/VerifBox"
 
 export const App = () =>{
   
@@ -20,7 +22,14 @@ export const App = () =>{
   const [Paramid,setParamId] = useState("")
   const [coord,setCord] = useState({lat:"26.87560",lng:"80.91150"})
   const [auth,setAuth] = useState({token:"",user:null})
+  const [emailVer,setEmailVerf] = useState(false)
+  const [verifBox,setVrfBox] = useState(false)
+
   return(
+
+<VeriBoxCont.Provider value={{verifBox,setVrfBox}}>
+
+<EmailVerf.Provider value={{emailVer,setEmailVerf}}>
 
 <AuthenContext.Provider value={{auth,setAuth}}>
 
@@ -32,7 +41,7 @@ export const App = () =>{
 
 <Visibility.Provider value={{visible,setVis}}>
 
-<div className={`${visible?"max-h-96 overflow-hidden":""}`}>
+<div className={`${visible || verifBox?"max-h-96 overflow-hidden":""}`}>
 
 <Routes>
 
@@ -57,6 +66,10 @@ export const App = () =>{
 </ParamCont.Provider>
 
 </AuthenContext.Provider>
+
+</EmailVerf.Provider>
+  
+</VeriBoxCont.Provider>
     
   )
 }

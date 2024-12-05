@@ -1,16 +1,97 @@
-import { useContext} from "react"
+import { useContext, useEffect, useState,useRef} from "react"
 import { CartContext } from "../context/CartContext"
 import empty from '../assets/2xempty_cart_yfxml0.avif'
-import { NavLink } from "react-router-dom"
+import { NavLink, useNavigate } from "react-router-dom"
 import vegIcon from '../assets/299-2998556_vegetarian-food-symbol-icon-non-veg-symbol-png.png'
 import nonIcon from '../assets/images.png'
 import { AuthenContext } from "../context/Authen"
+import { CiLock } from "react-icons/ci";
+import { CiUnlock } from "react-icons/ci";
+import { IoCloseOutline } from "react-icons/io5";
+import { ErrorToast, SuccessToast } from "./NotToast"
+import OTPInput from "otp-input-react";
+import { MdOutlineEdit } from "react-icons/md";
+import MoonLoader from 'react-spinners/MoonLoader'
+import { EmailVerf } from "../context/EmailVerf"
+import { VeriBoxCont } from "../context/VerifBox"
 
 
 export const Cart = () =>{
     const {cartData,setCartData} = useContext(CartContext)
+    const {emailVer,setEmailVerf} = useContext(EmailVerf)
     const {auth} = useContext(AuthenContext)
+    const {verifBox,setVrfBox} = useContext(VeriBoxCont)
+
+    const [email,setEmail] = useState("")
+    const [otpBox,setOTPBox] = useState(false)
+    const [otp,setOTP] = useState("")
+    const [otpToken,setotpToken] = useState("")
+    const [loading,setLoading] = useState(false)
     let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100 || curVal.defaultPrice/100)),0)
+
+   const navigate = useNavigate()
+
+   const handleCheckout = () =>{
+    if(emailVer){
+      navigate("/checkout")
+    }else{
+      setVrfBox(!verifBox) 
+    }
+   }
+
+    const handleSendOTP =async (e) =>{
+    e.preventDefault()
+    try {
+    setLoading(true)
+    const requestURL = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/verifyEmail/sendOTP`,{
+      method:"POST",headers:{
+        'Content-Type':'application/json'
+      },body:JSON.stringify({email,name:auth?.user?.name})
+    })
+    const response = await requestURL.json()
+    const {success} = response
+    setLoading(false)
+    if(success){
+      setotpToken(response.otp)
+      SuccessToast("OTP send successfully")
+      setOTPBox(true)
+    }
+    } catch (err) {
+      setError('Error sending verification email. Please try again.')
+    }
+   }
+
+   const handleEditEmail = () =>{
+    setEmail("")
+    setLoading(false)
+    setOTPBox(false)
+    setOTP("")
+   }
+
+   const verifyOTP =async (e) =>{
+   e.preventDefault()
+   setLoading(true)
+   const requestURL = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/verifyEmail/verifyOTP`,{
+    method:"POST",headers:{
+      'Content-Type':'application/json'
+    },body:JSON.stringify({otp,token:otpToken})
+   })
+   const response = await requestURL.json()
+   const {success} = response
+   setLoading(false)
+   if(success){
+    setEmailVerf(true)
+     setVrfBox(false)
+     setEmail("")
+     setOTPBox(false)
+     setotpToken("")
+    SuccessToast("Email verified successfully")
+   }
+   else{
+    ErrorToast("Wrong otp")
+   }
+   }
+  
     return(
         <>
        {
@@ -34,7 +115,7 @@ export const Cart = () =>{
         </div>
         :
       
-        <div className={`w-full h-full`}>
+        <div className={`w-full h-full ${verifBox?"overflow-y-hidden":null}`}>
              <div className={`w-[75%] mx-auto mt-6 lD:w-[85%] tb:w-[88%]` }>
 
 
@@ -103,17 +184,67 @@ export const Cart = () =>{
   <hr className="border-zinc-400" />
  
  
-<NavLink to={`${auth.token.length>0?"/checkout":"/"}`}>
-<button className="mt-6 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full">
+
+<button onClick={()=>handleCheckout()} className="mt-6 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full">
+{emailVer ? <CiUnlock className="text-2xl"/> : <CiLock className="text-2xl"/>}
 <h1 className="ml-2">Checkout</h1>
   </button>
-</NavLink>
+
+{
+  verifBox? 
+  <div className="absolute flex items-center justify-center w-full h-full top-0 left-0 z-50 bg-zinc-500/50 backdrop-blur-md">
+  
+<div className="w-[530px] relative min-h-64 rounded-lg shadow-2xl shadow-zinc-600 bg-white">
+
+<IoCloseOutline onClick={()=>setVrfBox(!verifBox)} className="text-2xl cursor-pointer absolute right-3 top-2"/>
+
+{
+  otpBox? 
+  <div className="">
+    <button onClick={()=>handleEditEmail()} className="bg-violet-500 rounded-lg py-2 absolute hover:bg-violet-400 hover:text-black duration-200 transition-all ease-in-out top-2 left-2 text-white flex items-center justify-center px-3">
+    <MdOutlineEdit className="text-xl mr-1"/>
+    Edit
+    </button>
+    <h1 className="text-center py-7 text-lg font-bold">Verify OTP</h1>
+    <div className="px-7">
+<h1>Enter OTP sent to {email}</h1>
+<form action="" className="flex flex-col" onSubmit={verifyOTP}>
+<OTPInput value={otp} onChange={setOTP} autoFocus OTPLength={4} otpType="number" disabled={false} secure />
+<button className="mt-3 py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg">
+  {
+    loading && <MoonLoader className="mr-3" size={20}/>
+  }
+  <h1>Verify otp</h1>
+  </button>
+</form>
+</div>
+  </div>
+  :<>
+  <h1 className="text-center py-7 text-lg font-bold">Verify Email Address</h1>
+<div className="px-7">
+<h1>Enter email to verify OTP</h1>
+<form action="" className="flex flex-col" onSubmit={handleSendOTP}>
+<input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" className="bg-zinc-300 mt-1 focus:outline-none text-lg py-3 px-5 rounded-lg" />
+  <button className="mt-3 py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg">
+  {
+    loading && <MoonLoader className="mr-3" size={20}/>
+  }
+  <h1>Send otp</h1>
+  </button>
+</form>
+</div>
+  </>
+}
+
+</div>
+
+  </div>
+  :null
+}
 
  </div>
 
  </div>
-
- 
 
  </div>
 

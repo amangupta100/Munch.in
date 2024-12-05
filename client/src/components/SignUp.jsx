@@ -7,17 +7,19 @@ import { ErrorToast, SuccessToast } from "./NotToast";
 import { AuthenContext } from "../context/Authen";
 import { ParamCont } from "../context/ParamCont";
 import { IoMdArrowBack } from "react-icons/io";
-import MoonLoader from "react-spinners/MoonLoader";
+import MoonLoader from "react-spinners/MoonLoader"
+import { FcGoogle } from "react-icons/fc";
+import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
+import {app}  from "./AuthGoogle";
 
 export const SignUp = () =>{
     const navigate = useNavigate()
     const [vis,setVis] = useState(false)
-    const [inpval,setInpVal] = useState({
-        name:"",email:"",password:""
-    })
+    const [inpval,setInpVal] = useState({name:"",email:"",password:""})
     const {auth,setAuth} = useContext(AuthenContext)
     const {Paramid} = useContext(ParamCont)
     const [loading,setLoading] = useState(false)
+    const [loadGoogl,setloadGoogl] = useState(false)
 
     const handleInpChange = (name,val) =>{
     setInpVal({...inpval,[name]:val})
@@ -52,6 +54,37 @@ export const SignUp = () =>{
     }catch(err){
         ErrorToast(err)
     }
+    }
+
+    const handleGoogleAuth =async ()=>{
+        try{
+        const provider = new GoogleAuthProvider()
+        const authGoogle = getAuth(app)
+        const result = await signInWithPopup(authGoogle,provider)
+        
+        setloadGoogl(true)
+        const resFron = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/google`,{
+            method:"POST",
+            headers:{
+                'Content-Type':'application/json'
+            },
+            body:JSON.stringify({
+                name:result?.user?.displayName,
+                email:result?.user?.email,
+                photo:result?.user?.photoURL,
+            })
+        })
+
+        const respBack = await resFron.json()
+        setloadGoogl(false)
+        const {message,success} = respBack
+        navigate("/")
+        SuccessToast("Logged in successfully")
+        setAuth({...auth,token:respBack.token,user:respBack.user})
+    }
+        catch(err){
+
+        }
     }
 
     return(
@@ -109,7 +142,16 @@ export const SignUp = () =>{
         }
         <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>SignUp User</h1>
         </button>
+        <h1 className="text-lg text-center">Or</h1>
         </form>
+
+        <button onClick={handleGoogleAuth} className="flex items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300">
+        {
+            loadGoogl && <MoonLoader size={20} />
+        }
+        <FcGoogle className="text-2xl ml-3"/>
+       <h1 className="ml-2">Continue With Google</h1>
+        </button>
 
         </div>
         

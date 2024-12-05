@@ -12,9 +12,6 @@ const {auth,setAuth} = useContext(AuthenContext)
 const [loading,setLoading] = useState(false)
 const navigate = useNavigate()
 
-console.log(auth)
-console.log(userDetails)
-
 const handleFormDet = (value,name) =>{
 setForDetails({...formDet,[name]:value})
 }
@@ -56,7 +53,6 @@ const handleDetSumbit =async (e) =>{
    if(success){
     SuccessToast(message)
     setAuth({...auth,[auth.token]:response.token})
-    console.log(auth,userDetails)
    }
    else{
     ErrorToast(message)

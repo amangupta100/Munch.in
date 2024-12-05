@@ -1,7 +1,5 @@
-import { useContext } from "react";
-import { IoIosStarOutline } from "react-icons/io";
 import { NavLink } from "react-router-dom";
-import { Coordinate } from "../context/sideOpen";
+import star from '../assets/star-svgrepo-com.svg'
 
 export const RestCard = ({rest}) =>{
     return(
@@ -15,8 +13,8 @@ export const RestCard = ({rest}) =>{
             </div>
             <div className="px-2 pt-2">
                 <h1 className="font-extrabold text-[17px] line-clamp-1"> {rest.info.name} </h1>
-                <div className="flex items-center ">
-                    <IoIosStarOutline className="bg-green-600 rounded-full text-2xl text-white"/>
+                <div className="flex items-center">
+                    <img src={star} className="w-6 text-green-600" alt="" />
                    <div className="flex">
 
                   <div className="flex">

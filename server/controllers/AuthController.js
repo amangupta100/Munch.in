@@ -81,7 +81,7 @@ let token = jwt.sign({email,id:newUser._id},process.env.JWT_SECRET)
 let user = {
     name,email
 }
-res.json({message:"User not exit",success:true,token,user})
+res.json({message:"User Created successfully",success:true,token,user})
 }
 }
 

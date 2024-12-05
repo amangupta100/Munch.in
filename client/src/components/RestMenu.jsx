@@ -1,6 +1,5 @@
 import { NavLink, useNavigate, useParams } from "react-router-dom"
 import { useContext, useEffect, useState } from "react"
-import { IoIosStarOutline } from "react-icons/io";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { FaArrowRight } from "react-icons/fa6";
 import { IoIosSearch } from "react-icons/io";
@@ -13,6 +12,7 @@ import {  ErrorToast, SuccessToast } from "./NotToast";
 import { CartContext } from "../context/CartContext";
 import { ParamCont } from "../context/ParamCont";
 import { AuthenContext } from "../context/Authen";
+import star from '../assets/star-svgrepo-com.svg'
 
 export const RestMenu = () =>{
 
@@ -73,7 +73,7 @@ export const RestMenu = () =>{
             <div className="w-full h-full border border-slate-200/70 rounded-[30px] bg-white px-5 py-5">
               
            <div className="flex">
-           <IoIosStarOutline className="bg-green-600 rounded-full text-xl text-white"/>
+          <img src={star} className="w-5" alt="" />
            <h1 className="ml-1 font-bold"> {resinfo.avgRatingString} </h1>
            <h1 className="font-bold ml-1"> ({resinfo.totalRatingsString}) </h1>
            .
@@ -279,7 +279,7 @@ return(
             className="rounded-xl"
             src={`https://media-assets.swiggy.com/swiggy/image/upload/${imageId}`}
             alt=""/>
-           <button onClick={handleCart} className="bg-white font-extrabold shadow-lg shadow-zinc-200 border-[1.5px] px-7 text-green-500 right-[70px] lm:right-[20px] tb:right-[50px] -bottom-5 border-zinc-300  py-3 rounded-xl absolute">ADD</button>
+           <button onClick={handleCart} className="bg-white font-extrabold shadow-lg shadow-zinc-200 border-[1.5px] px-7 text-green-500 right-[70px] lm:right-[20px] mdm:px-5 mdm:py-2 mdm:right-[10px] tb:right-[50px] -bottom-5 border-zinc-300  py-3 rounded-xl absolute">ADD</button>
         </div>
         </div>
         <hr className="border border-zinc-200" />

@@ -8,7 +8,7 @@ export const FrontPage = () => {
       <div className="flex justify-between mtb:items-center mtb:flex-col-reverse">
         <div className="flex w-[50%] mtb:w-full mtb:mt-10 mtb:mb-5 justify-center items-center flex-col">
           <div className="flex items-center">
-            <p className='w-[40px] h-[1.3px] bg-[#414141] mtb:w-[75px] lm:w-[50px]'></p>
+            <p className='w-[40px] h-[1.3px] bg-[#414141] mtb:w-[75px] lm:w-[50px] mdm:hidden'></p>
             <h1 className='ml-2 mtb:mr-4 mtb:ml-4 mtb:text-lg'>Order The Food You Loves Most</h1>
             <p className='w-[40px] h-[1.3px] mtb:w-[75px] lm:hidden bg-[#414141] mtb:inline-block hidden'></p>
           </div>
