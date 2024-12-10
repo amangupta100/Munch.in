@@ -12,8 +12,10 @@ import { ParamCont } from "./context/ParamCont"
 import { ComingSoon } from "./components/ComingSoon"
 import { AuthenContext } from "./context/Authen"
 import { Checkout } from "./components/Checkout"
-import { EmailVerf } from "./context/EmailVerf"
 import { VeriBoxCont } from "./context/VerifBox"
+import { SelectedAddCont } from "./context/SelectedAddCont"
+import {ActiveStepper} from "./context/ActiveStepper"
+import { PaymentBoxCont } from "./context/PaymentBoxCont"
 
 export const App = () =>{
   
@@ -22,16 +24,22 @@ export const App = () =>{
   const [Paramid,setParamId] = useState("")
   const [coord,setCord] = useState({lat:"26.87560",lng:"80.91150"})
   const [auth,setAuth] = useState({token:"",user:null})
-  const [emailVer,setEmailVerf] = useState(false)
   const [verifBox,setVrfBox] = useState(false)
+  const [selectedAddr,setselecAddr] = useState()
+  const [ activeStep, setActiveStep ] = useState(0);
+  const [paymentBox,setPaymentBox] = useState(false)
 
   return(
 
-<VeriBoxCont.Provider value={{verifBox,setVrfBox}}>
+<PaymentBoxCont.Provider value={{paymentBox,setPaymentBox}}>
 
-<EmailVerf.Provider value={{emailVer,setEmailVerf}}>
+<ActiveStepper.Provider value={{activeStep,setActiveStep}}>
+
+<SelectedAddCont.Provider value={{selectedAddr,setselecAddr}}>
 
 <AuthenContext.Provider value={{auth,setAuth}}>
+<VeriBoxCont.Provider value={{verifBox,setVrfBox}}>
+
 
 <ParamCont.Provider value={{Paramid,setParamId}}>
 
@@ -41,7 +49,7 @@ export const App = () =>{
 
 <Visibility.Provider value={{visible,setVis}}>
 
-<div className={`${visible || verifBox?"max-h-96 overflow-hidden":""}`}>
+<div className={`${visible || verifBox || paymentBox ?"max-h-96 overflow-hidden":""}`}>
 
 <Routes>
 
@@ -65,11 +73,15 @@ export const App = () =>{
 
 </ParamCont.Provider>
 
+</VeriBoxCont.Provider>
 </AuthenContext.Provider>
 
-</EmailVerf.Provider>
-  
-</VeriBoxCont.Provider>
+</SelectedAddCont.Provider>
+
+
+    </ActiveStepper.Provider>
+
+   </PaymentBoxCont.Provider>
     
   )
 }

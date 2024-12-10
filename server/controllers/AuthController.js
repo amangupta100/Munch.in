@@ -45,7 +45,7 @@ const login =async (req,res) =>{
     else{
   await bcrypt.compare(password,user.password,(err,result)=>{
     if(result){
-        res.status(201).json({message:"Login successfully",success:true,token:genToken(user._id,user.name,user.addresses),user:{name:user.name}})
+        res.status(201).json({message:"Login successfully",success:true,token:genToken(user._id,user.name,user.addresses),user:{name:user.name,isEmailVerf:user.isEmailVerified,id:user._id}})
     }
     else{
      res.status(403).json({message:"Email or password is wrong",success:false})
@@ -64,26 +64,48 @@ const logout = (req,res) =>{
     res.status(201).json({message:"Logout Successfully",succes:true})
 }
 
-const googleLogin =async (req,res) =>{
-const {name,email,photo} = req.body
+const googleLogin = async (req, res) => {
+    const { name, email, photo } = req.body;
 
-const user = await userModel.findOne({email})
-if(user){
-    let user = {
-        name,email
+    try {
+        // Check if the user already exists
+        let user = await userModel.findOne({ email });
+
+        if (!user) {
+            // Create a new user without a password
+            user = new userModel({
+                name,
+                email,
+                photo,
+                isEmailVerified:true,
+                // Do not set password here
+            });
+            await user.save();
+        }
+
+        // Generate a token and respond
+        const token = genToken(user); // Implement token generation logic
+        let id = user._id
+        res.status(200).json({ success: true, token, user:{name,email,id} });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: error.message });
     }
-    let token = jwt.sign({email,id:user._id},process.env.JWT_SECRET)
-    res.json({message:"Logged In successfully",success:true,token,user})
-}
-else{
-const newUser =await userModel.create({name:name,email:email})
-let token = jwt.sign({email,id:newUser._id},process.env.JWT_SECRET)
-let user = {
-    name,email
-}
-res.json({message:"User Created successfully",success:true,token,user})
-}
+};
+
+const upDateEmailVerf =async (req,res) =>{
+const {id} = req.body
+const user = await userModel.findByIdAndUpdate(
+
+    id,
+
+    { $set: { isEmailVerified: true } }, // Toggle the isActive value
+
+    { new: true } // Return the updated document
+
+);
+res.json(user);
 }
 
 
-module.exports = {signUp,login,logout,googleLogin}
+module.exports = {signUp,login,logout,googleLogin,upDateEmailVerf}

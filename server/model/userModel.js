@@ -1,9 +1,26 @@
 const mongoDb = require("mongoose")
 
-const userModel = mongoDb.Schema({
-    name:String,email:String,password:String,addresses:{
+const userModel =mongoDb.Schema({
+    name: {
+      type: String,
+    },
+    email: {
+      type: String,
+      unique: true,
+    },
+    password: {
+      type: String,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default:false
+    },
+    addresses: {
         type:Array,default:[]
     }
-},{minimize:false})
+  }, {
+    timestamps: true,
+    minimize: false
+  });
 
 module.exports = mongoDb.model("user",userModel)

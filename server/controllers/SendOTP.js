@@ -2,10 +2,11 @@ const nodemailer = require("nodemailer")
 const randomString = require("randomstring")
 const { OTP_Verf } = require("../libs/EmailConf")
 const jwt = require("jsonwebtoken")
+const userModel = require("../model/userModel")
 
-const  generateOTP = () => {
+const generateOTP = () =>{
     return randomString.generate({
-        length:4,charset:'numeric'
+        length:4,charset:"numeric"
     })
 }
 
@@ -35,13 +36,18 @@ try{
 }
 }
 
-const VerifyOTP = (req,res) =>{
-const {otp,token} = req.body
+const VerifyOTP =async (req,res) =>{
+const {otp,token,id} = req.body
 try{
  if(otp!=token) res.json({success:false})
- else res.json({success:true})
+ else{
+    const user = await userModel.findById(id);
+    user.isEmailVerified = true
+    await user.save()
+    res.json({success:true})
+}
 }catch(err){
-
+res.json(err.message)
 }
 }
 

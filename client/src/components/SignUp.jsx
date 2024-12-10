@@ -16,10 +16,11 @@ export const SignUp = () =>{
     const navigate = useNavigate()
     const [vis,setVis] = useState(false)
     const [inpval,setInpVal] = useState({name:"",email:"",password:""})
-    const {auth,setAuth} = useContext(AuthenContext)
-    const {Paramid} = useContext(ParamCont)
     const [loading,setLoading] = useState(false)
     const [loadGoogl,setloadGoogl] = useState(false)
+    
+    const {Paramid} = useContext(ParamCont)
+    const {auth,setAuth} = useContext(AuthenContext)
 
     const handleInpChange = (name,val) =>{
     setInpVal({...inpval,[name]:val})
@@ -77,10 +78,9 @@ export const SignUp = () =>{
 
         const respBack = await resFron.json()
         setloadGoogl(false)
-        const {message,success} = respBack
         navigate("/")
-        SuccessToast("Logged in successfully")
-        setAuth({...auth,token:respBack.token,user:respBack.user})
+        SuccessToast("SignUp in successfully")
+        setAuth({...auth,token:respBack.token,user:{...respBack.user,isEmailVerf:true}})
     }
         catch(err){
 

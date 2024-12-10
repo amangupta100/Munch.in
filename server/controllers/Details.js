@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken")
 const userModel = require("../model/userModel")
 
-const genToken = (name,pincode,address,number,id,State,city) =>{
-    return jwt.sign({name,pincode,address,number,id,State,city},process.env.JWT_SECRET)
+const genToken = (id,name,addresses) =>{
+    return jwt.sign({name,id,addresses},process.env.JWT_SECRET)
 }
 
 const details = (req,res) =>{
@@ -29,7 +29,10 @@ if(!result) res.json({success:false,message:"User not found"})
 else{
     result.addresses.push(data);
     await result.save();
-    res.json({success:true,message:"Address Updated Successfully",token:genToken(result.name,result.addresses.pincode,result.addresses.address,result.addresses.number,result._id,result.addresses.State,result.addresses.city)})
+    let token = genToken(result._id,result.name,result.addresses)
+    res.json({success:true,message:"Address Updated Successfully",result,token})
 }
 }
+
+
 module.exports = {details,updatedDetails}

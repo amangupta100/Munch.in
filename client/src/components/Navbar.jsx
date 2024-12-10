@@ -4,7 +4,7 @@ import { CiUser } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Coordinate, Visibility } from '../context/sideOpen';
 import { IoMdClose } from "react-icons/io";
 import { TiLocation } from "react-icons/ti";
@@ -143,7 +143,8 @@ export const Navbar =() =>{
                     </div>
                   
                      <div className="relative">
-                    <button onClick={()=>setProfVis(!profVis)} className='bg-black hover:text-orange-400 hover:bg-zinc-700 text-white px-[12px] py-[5px] rounded-full text-lg'> {auth.user.name[0]} </button>
+                   <button onClick={()=>setProfVis(!profVis)} className='bg-black hover:text-orange-400 hover:bg-zinc-700 text-white px-[12px] py-[5px] rounded-full text-lg'> {auth.user.name[0]} </button>
+                    
                     {
                      profVis &&  <div onMouseLeave={()=>setProfVis(!profVis)} className="absolute top-10 py-4 px-3 right-0 w-40  bg-zinc-200 rounded-xl">
                      <NavLink className="flex items-center"><CiUser className='text-2xl'/> <h1 className='ml-2'>User</h1></NavLink>

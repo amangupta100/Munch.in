@@ -8,12 +8,11 @@ import { FrontPage } from "./FrontPage";
 export const MainPage = () =>{
     const {coord:{lat,lng}} = useContext(Coordinate)
   
-    const [favdish,setfavDish] = useState([])
     const [topres,settopRes] = useState([])
     const [head,setHead] = useState()
     const [onlineDel,setOnlineDel] = useState()
     const [onyourmind,setonyourMind]  = useState([])
-   
+
     const fetchData = async () => {
                                    
        const data =await fetch(`${import.meta.env.VITE_FETCH_DATA_URL}/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`)

@@ -12,16 +12,13 @@ import { ErrorToast, SuccessToast } from "./NotToast"
 import OTPInput from "otp-input-react";
 import { MdOutlineEdit } from "react-icons/md";
 import MoonLoader from 'react-spinners/MoonLoader'
-import { EmailVerf } from "../context/EmailVerf"
 import { VeriBoxCont } from "../context/VerifBox"
-
 
 export const Cart = () =>{
     const {cartData,setCartData} = useContext(CartContext)
-    const {emailVer,setEmailVerf} = useContext(EmailVerf)
-    const {auth} = useContext(AuthenContext)
+    const {auth,setAuth} = useContext(AuthenContext)
     const {verifBox,setVrfBox} = useContext(VeriBoxCont)
-
+    
     const [email,setEmail] = useState("")
     const [otpBox,setOTPBox] = useState(false)
     const [otp,setOTP] = useState("")
@@ -31,12 +28,11 @@ export const Cart = () =>{
 
    const navigate = useNavigate()
 
-   const handleCheckout = () =>{
-    if(emailVer){
-      navigate("/checkout")
-    }else{
-      setVrfBox(!verifBox) 
-    }
+   const handleCheckout =async () =>{
+   const {user} = auth
+  
+   if(user?.isEmailVerf) navigate("/checkout")
+   else setVrfBox(!verifBox)
    }
 
     const handleSendOTP =async (e) =>{
@@ -52,9 +48,10 @@ export const Cart = () =>{
     const {success} = response
     setLoading(false)
     if(success){
-      setotpToken(response.otp)
-      SuccessToast("OTP send successfully")
       setOTPBox(true)
+      setotpToken(response.otp)
+      
+      SuccessToast("OTP send successfully")
     }
     } catch (err) {
       setError('Error sending verification email. Please try again.')
@@ -74,26 +71,28 @@ export const Cart = () =>{
    const requestURL = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/verifyEmail/verifyOTP`,{
     method:"POST",headers:{
       'Content-Type':'application/json'
-    },body:JSON.stringify({otp,token:otpToken})
+    },body:JSON.stringify({otp,token:otpToken,id:auth.user.id})
    })
    const response = await requestURL.json()
    const {success} = response
    setLoading(false)
    if(success){
-    setEmailVerf(true)
-     setVrfBox(false)
+    setVrfBox(false)
      setEmail("")
      setOTPBox(false)
      setotpToken("")
+     setOTP("")
     SuccessToast("Email verified successfully")
+
+    setAuth({...auth,user:{...auth.user,isEmailVerf:true}})
    }
    else{
     ErrorToast("Wrong otp")
    }
    }
-  
     return(
         <>
+  
        {
         cartData.length==0 ?
         <div className={`w-full h-full`}>
@@ -140,7 +139,7 @@ export const Cart = () =>{
            <div className="flex items-center  justify-between">
   <div className="w-[55%] flex flex-col">
   <h1>{elem.name}</h1>
-  <p className="mt-2"> {elem?.description?.slice(0,100)+"..."} </p>
+  <p className="mt-2"> {elem?.description?.slice(0,60)+"..."} </p>
   <h1 className="font-semibold"> ₹{elem.price/100 || elem.defaultPrice/100} </h1>
 
   <div className="flex items-center mt-2">
@@ -183,10 +182,9 @@ export const Cart = () =>{
   </div>
   <hr className="border-zinc-400" />
  
- 
 
 <button onClick={()=>handleCheckout()} className="mt-6 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full">
-{emailVer ? <CiUnlock className="text-2xl"/> : <CiLock className="text-2xl"/>}
+{auth?.user?.isEmailVerf ? <CiUnlock className="text-2xl"/> : <CiLock className="text-2xl"/>}
 <h1 className="ml-2">Checkout</h1>
   </button>
 
@@ -196,7 +194,13 @@ export const Cart = () =>{
   
 <div className="w-[530px] relative min-h-64 rounded-lg shadow-2xl shadow-zinc-600 bg-white">
 
-<IoCloseOutline onClick={()=>setVrfBox(!verifBox)} className="text-2xl cursor-pointer absolute right-3 top-2"/>
+<IoCloseOutline onClick={()=>{
+  setVrfBox(!verifBox)
+  setEmail("")
+  setOTPBox(false)
+  setOTP("")
+  setLoading(false)
+}} className="text-2xl cursor-pointer absolute right-3 top-2"/>
 
 {
   otpBox? 

@@ -15,6 +15,7 @@ import MoonLoader from "react-spinners/MoonLoader"
 export const Login = () =>{
    
     const {Paramid} = useContext(ParamCont)
+    const {auth,setAuth} = useContext(AuthenContext)
 
     const [vis,setVis] = useState(false)
     const [loading,setLoading] = useState(false)
@@ -22,7 +23,6 @@ export const Login = () =>{
 
     const [inpVal,setInpVal] = useState({email:"",password:""})
     const navigate = useNavigate()
-    const {auth,setAuth} = useContext(AuthenContext)
 
     const handleInpChange = (name,val) =>{
     setInpVal({...inpVal,[name]:val})
@@ -30,30 +30,32 @@ export const Login = () =>{
 
     const handleFormSubmit =async (e) =>{
     e.preventDefault()
-    try{
-   setLoading(true)
-   const data = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/login`,{
-    method:"POST",
-    headers:{
-        "Content-Type":"application/json"
-    },
-    body:JSON.stringify(inpVal),
-   })
-   const response = await data.json()
-   const {success,message} = response
-   setLoading(false)
-   if(success){
-       SuccessToast(message)
-       navigate("/")
-       setAuth({...auth,token:response.token,user:response.user})
-   }
+   if(!inpVal.email || !inpVal.password) ErrorToast("Please recheck the form")
    else{
-    ErrorToast(message)
-   }
-    }catch(err){
-     ErrorToast(err)
-    }
-
+    try{
+        setLoading(true)
+        const data = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/auth/login`,{
+         method:"POST",
+         headers:{
+             "Content-Type":"application/json"
+         },
+         body:JSON.stringify(inpVal),
+        })
+        const response = await data.json()
+        const {success,message} = response
+        setLoading(false)
+        if(success){
+            SuccessToast(message)
+            navigate("/")
+            setAuth({...auth,token:response.token,user:response.user})
+        }
+        else{
+         ErrorToast(message)
+        }
+         }catch(err){
+          ErrorToast(err)
+         }
+}
     }
 
     const handleGoogleAuth =async ()=>{
@@ -76,11 +78,11 @@ export const Login = () =>{
         })
 
         const respBack = await resFron.json()
+        
         setloadGoogl(false)
-        const {message,success} = respBack
         navigate("/")
         SuccessToast("Logged in successfully")
-        setAuth({...auth,token:respBack.token,user:respBack.user})
+        setAuth({...auth,token:respBack.token,user:{...respBack.user,isEmailVerf:true}})
     }
         catch(err){
 
