@@ -13,12 +13,12 @@ import { CartContext } from "../context/CartContext";
 import { ParamCont } from "../context/ParamCont";
 import { AuthenContext } from "../context/Authen";
 import star from '../assets/star-svgrepo-com.svg'
+import { RestMenuSkel } from "./RestMenuSkel";
 
 export const RestMenu = () =>{
 
-
     const {id} = useParams()
-    const {Paramid,setParamId} = useContext(ParamCont)
+    const {setParamId} = useContext(ParamCont)
     useEffect(()=>{setParamId(id)},[])
 
    let str =  (id.split("-").at(-1))
@@ -30,10 +30,13 @@ export const RestMenu = () =>{
     const [data,setData] = useState([])
     const [resinfo,setresInfo] = useState([])
     const [offers,setOffers] = useState([])
+    const [loading,setLoading] = useState(false)
 
     const fetchData =async () =>{
+    setLoading(true)
     const val = await fetch(`${import.meta.env.VITE_FETCH_DATA_URL}/menu/pl?page-type=REGULAR_MENU&complete-menu=true&lat=26.87560&lng=80.91150&restaurantId=${mainId}&catalog_qa=undefined&submitAction=ENTER`)
     const rVal = await val.json()
+    setLoading(false)
 
     let resInfo = rVal?.data?.cards.find((data)=>
         data?.card?.card?.["@type"].includes("food.v2.Restaurant"))?.card?.card?.info
@@ -65,86 +68,94 @@ export const RestMenu = () =>{
         
         <div className="w-full">
 
-        <div className="w-[800px] lD:w-[870px] mtb:w-[640px] lm:w-[370px] mdm:w-[320px] pt-8 mx-auto">
-        <p className="text-[10px]"> <NavLink to="/"><span className="text-gray-400">Home / </span></NavLink>  <NavLink to="/"><span className="text-gray-400">{resinfo.city}</span></NavLink> / {resinfo.name}</p>
-        <h1 className="text-2xl font-extrabold mt-8"> {resinfo.name} </h1>
-
-        <div className="w-full mt-3 rounded-[30px] bg-gradient-to-t p-5 from-slate-300/70 h-[206px]">
-            <div className="w-full h-full border border-slate-200/70 rounded-[30px] bg-white px-5 py-5">
-              
-           <div className="flex">
-          <img src={star} className="w-5" alt="" />
-           <h1 className="ml-1 font-bold"> {resinfo.avgRatingString} </h1>
-           <h1 className="font-bold ml-1"> ({resinfo.totalRatingsString}) </h1>
-           .
-           <h1 className="font-extrabold ml-3"> {resinfo.costForTwoMessage} </h1>
-           </div>
-            <h1 className="font-bold mt-2 text-sm underline text-orange-500"> {resinfo?.cuisines?.join(", ")} </h1>
-
-           <div className="flex gap-2 mt-4">
-
-           <div className="w-[9px] flex flex-col justify-center items-center">
-            <div className="w-[7px] h-[7px] bg-slate-300 rounded-full"></div>
-            <div className="w-[2px] h-[25px] bg-slate-300 rounded-full"></div>
-            <div className="w-[7px] h-[7px] bg-slate-300 rounded-full"></div>
-           </div>
-
-           <div className="flex flex-col text-sm font-bold">
-            <div className="flex"> <h1>Outlet</h1> <h1 className="text-slate-500 ml-4"> {resinfo.locality} </h1></div>
-            <h1> {resinfo.sla?.slaString} </h1>
-           </div>
-
-           </div>
-
+        {
+            loading ? 
+            <div className="w-[800px] lD:w-[870px] mtb:w-[640px] lm:w-[350px] mdm:w-[320px] pt-8 mx-auto">
+                <RestMenuSkel/>
             </div>
-        </div>
-
-       <div className="w-full overflow-hidden">
-       <div className="flex justify-between mt-6">
-        <h1 className="text-xl font-extrabold">Deals for you</h1>
-        <div className="flex gap-2">
-            <div onClick={handlePrev} className={`w-8 ${val==0?"cursor-not-allowed bg-slate-200":"cursor-pointer bg-slate-300"} h-8 cursor-pointer rounded-full  flex items-center justify-center`}> <FaArrowLeftLong className={`${val==0?"text-slate-300":"bg-slate-300"}`}/></div>
-            <div onClick={handleNext} className={`w-8 ${val==125?"cursor-not-allowed bg-slate-200":"cursor-pointer bg-slate-300"} h-8 cursor-pointer rounded-full flex items-center justify-center`}> <FaArrowRight className={`${val==124?"text-slate-300":"bg-slate-300"}`}/></div>
-        </div>
-       </div>
-
-       <div style={{translate:`-${val}%`}} className="flex gap-4 mt-4 pb-8 duration-1000">
-         
-        {
-            offers.map((elem,i)=>{
-                return(
-                    <OfferCard key={i} data={elem} />
-                )
-            })
-        }
-
-       </div>
-       </div>
-
-       <h1 className="text-base font-extrabold text-center mt-2 text-gray-500 tracking-widest">MENU</h1>
-       <NavLink to="/">
-       <div className="w-full relative py-[16px] rounded-xl mt-3 bg-zinc-200">
-        <h1 className="text-center">Search for dishes</h1>
-        <IoIosSearch className="absolute right-2 top-4 text-2xl"/>
-       </div>
-       </NavLink>
-
-        <div className="mt-8">
-
-        {
-            data.map((elem,i)=>{
-              
-              return(
-                <div className="mb-5 ">
-               <MenuCard key={i} card ={elem?.card?.card} resInfo ={resinfo} />
+             :
+              <div className="w-[800px] lD:w-[870px] mtb:w-[640px] lm:w-[350px] mdm:w-[320px] pt-8 mx-auto">
+            <p className="text-[10px]"> <NavLink to="/"><span className="text-gray-400">Home / </span></NavLink>  <NavLink to="/"><span className="text-gray-400">{resinfo.city}</span></NavLink> / {resinfo.name}</p>
+            <h1 className="text-2xl font-extrabold mt-8"> {resinfo.name} </h1>
+    
+            <div className="w-full mt-3 rounded-[30px] bg-gradient-to-t p-5 from-slate-300/70 h-[206px]">
+                <div className="w-full h-full border border-slate-200/70 rounded-[30px] bg-white px-5 py-5">
+                  
+               <div className="flex">
+              <img src={star} className="w-5" alt="" />
+               <h1 className="ml-1 font-bold"> {resinfo.avgRatingString} </h1>
+               <h1 className="font-bold ml-1"> ({resinfo.totalRatingsString}) </h1>
+               .
+               <h1 className="font-extrabold ml-3"> {resinfo.costForTwoMessage} </h1>
+               </div>
+                <h1 className="font-bold mt-2 text-sm underline text-orange-500"> {resinfo?.cuisines?.join(", ")} </h1>
+    
+               <div className="flex gap-2 mt-4">
+    
+               <div className="w-[9px] flex flex-col justify-center items-center">
+                <div className="w-[7px] h-[7px] bg-slate-300 rounded-full"></div>
+                <div className="w-[2px] h-[25px] bg-slate-300 rounded-full"></div>
+                <div className="w-[7px] h-[7px] bg-slate-300 rounded-full"></div>
+               </div>
+    
+               <div className="flex flex-col text-sm font-bold">
+                <div className="flex"> <h1>Outlet</h1> <h1 className="text-slate-500 ml-4"> {resinfo.locality} </h1></div>
+                <h1> {resinfo.sla?.slaString} </h1>
+               </div>
+    
+               </div>
+    
                 </div>
-              )
-            })
+            </div>
+    
+           <div className="w-full overflow-hidden">
+           <div className="flex justify-between mt-6">
+            <h1 className="text-xl font-extrabold">Deals for you</h1>
+            <div className="flex gap-2">
+                <div onClick={handlePrev} className={`w-8 ${val==0?"cursor-not-allowed bg-slate-200":"cursor-pointer bg-slate-300"} h-8 cursor-pointer rounded-full  flex items-center justify-center`}> <FaArrowLeftLong className={`${val==0?"text-slate-300":"bg-slate-300"}`}/></div>
+                <div onClick={handleNext} className={`w-8 ${val==125?"cursor-not-allowed bg-slate-200":"cursor-pointer bg-slate-300"} h-8 cursor-pointer rounded-full flex items-center justify-center`}> <FaArrowRight className={`${val==124?"text-slate-300":"bg-slate-300"}`}/></div>
+            </div>
+           </div>
+    
+           <div style={{translate:`-${val}%`}} className="flex gap-4 mt-4 pb-8 duration-1000">
+             
+            {
+                offers.map((elem,i)=>{
+                    return(
+                        <OfferCard key={i} data={elem} />
+                    )
+                })
+            }
+    
+           </div>
+           </div>
+    
+           <h1 className="text-base font-extrabold text-center mt-2 text-gray-500 tracking-widest">MENU</h1>
+           <NavLink to="/search">
+           <div className="w-full relative py-[16px] rounded-xl mt-3 bg-zinc-200">
+            <h1 className="text-center">Search for dishes</h1>
+            <IoIosSearch className="absolute right-2 top-4 text-2xl"/>
+           </div>
+           </NavLink>
+    
+            <div className="mt-8">
+    
+            {
+                data.map((elem,i)=>{
+                  
+                  return(
+                    <div className="mb-5 ">
+                   <MenuCard key={i} card ={elem?.card?.card} resInfo ={resinfo} />
+                    </div>
+                  )
+                })
+            }
+    
+            </div>
+    
+            </div>
         }
 
-        </div>
-
-        </div>
         </div>
         </>
     )
@@ -231,19 +242,21 @@ function DetailMenuCard({info,resInfo}){
     
     const handleCart = () =>{
     const isFind = cartData.find((elem)=>elem.id==info.id)
-     if(auth.token.length>0 && !isFind){
-        setCartData((prev)=>[...prev,info])
-        SuccessToast("Item added to cart")
+     if(auth.token.length>0 && isFind){
+        setCartData((prev)=>prev.map((item)=>
+        item.id == info.id ? {...item,quantity:item.quantity+1}:item
+        ))
+        ErrorToast("Item already present in cart")
      }
      else if(auth.token.length==0){
         ErrorToast("Login to continue shopping")
         navigate("/login")
     }
-    else if(auth.token.length>0){
-    ErrorToast("Item already in cart")
+    else if(auth.token.length>0 && !isFind){
+        setCartData((prev) => [...prev, { ...info, quantity: 1 }]);
+        SuccessToast("Item added to cart")
     }
     }
-
 return(
     <div className="w-full">
         <div className="flex pb-10 pt-5 items-center w-full min-h-[182px] justify-between">

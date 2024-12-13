@@ -34,5 +34,16 @@ else{
 }
 }
 
+const checkToken =async (req,res) =>{
+    res.send(jwt.verify(req.body.token,process.env.JWT_SECRET,(err,decoded)=>{
+        if (err) {
+            res.json({success:false,message:"Invalid token"})
+        } else {
+            res.json({success:true,decoded})
+        }
+    })
+    )
+}
 
-module.exports = {details,updatedDetails}
+
+module.exports = {details,updatedDetails,checkToken}

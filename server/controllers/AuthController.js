@@ -84,7 +84,7 @@ const googleLogin = async (req, res) => {
         }
 
         // Generate a token and respond
-        const token = genToken(user); // Implement token generation logic
+        const token = genToken(user._id,user.name,user.addresses);// Implement token generation logic
         let id = user._id
         res.status(200).json({ success: true, token, user:{name,email,id} });
     } catch (error) {

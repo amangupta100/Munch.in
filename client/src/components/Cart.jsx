@@ -13,18 +13,19 @@ import OTPInput from "otp-input-react";
 import { MdOutlineEdit } from "react-icons/md";
 import MoonLoader from 'react-spinners/MoonLoader'
 import { VeriBoxCont } from "../context/VerifBox"
+import { AiOutlineDelete } from "react-icons/ai";
 
 export const Cart = () =>{
     const {cartData,setCartData} = useContext(CartContext)
     const {auth,setAuth} = useContext(AuthenContext)
     const {verifBox,setVrfBox} = useContext(VeriBoxCont)
-    
+
     const [email,setEmail] = useState("")
     const [otpBox,setOTPBox] = useState(false)
     const [otp,setOTP] = useState("")
     const [otpToken,setotpToken] = useState("")
     const [loading,setLoading] = useState(false)
-    let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100 || curVal.defaultPrice/100)),0)
+    let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100*curVal.quantity || curVal.defaultPrice/100*curVal.quantity)),0)
 
    const navigate = useNavigate()
 
@@ -90,6 +91,63 @@ export const Cart = () =>{
     ErrorToast("Wrong otp")
    }
    }
+   
+   const addItem = (elem) => {
+    setCartData((prev) => {
+        const existingItemIndex = prev.findIndex(item => item.id === elem.id); // Assuming each item has a unique 'id'
+        if (existingItemIndex !== -1) {
+            // If the item already exists, increase the quantity
+            const updatedItem = {
+                ...prev[existingItemIndex],
+                quantity: prev[existingItemIndex].quantity + 1
+            };
+            return [
+                ...prev.slice(0, existingItemIndex),
+                updatedItem,
+                ...prev.slice(existingItemIndex + 1)
+            ];
+        } else {
+            // If the item does not exist, add it with quantity 1
+            return [...prev, { ...elem, quantity: 1 }];
+        }
+    });
+};
+
+const decItem = (elem) => {
+  setCartData((prev) => {
+      const existingItemIndex = prev.findIndex(item => item.id === elem.id);
+      if (existingItemIndex !== -1) {
+          const currentItem = prev[existingItemIndex];
+          if (currentItem.quantity > 1) {
+              // If quantity is more than 1, decrease it
+              const updatedItem = {
+                  ...currentItem,
+                  quantity: currentItem.quantity - 1
+              };
+              return [
+                  ...prev.slice(0, existingItemIndex),
+                  updatedItem,
+                  ...prev.slice(existingItemIndex + 1)
+              ];
+          } else {
+            ErrorToast("Item removed from cart")
+              // If quantity is 1, remove the item from the cart
+              return [
+                  ...prev.slice(0, existingItemIndex),
+                  ...prev.slice(existingItemIndex + 1)
+              ];
+          }
+      }
+      return prev; // Return the previous state if item not found
+  });
+};
+
+const handleDeleteItem = (elem) => {
+  setCartData((prev) => {
+      return prev.filter(item => item.id !== elem.id); // Remove the item with the matching id
+  });
+ErrorToast("Item deleted from cart")
+};
     return(
         <>
   
@@ -130,9 +188,10 @@ export const Cart = () =>{
 {
   cartData.map((elem)=>{
       return(
-          <div className=" mb-8 border-[1.2px] p-3 border-zinc-200 ">
+          <div className=" mb-8 border-[1.2px] p-3 border-zinc-200 relative py-7">
+            <AiOutlineDelete onClick={()=>handleDeleteItem(elem)} className="text-2xl right-3 cursor-pointer top-3 absolute"/>
   {
-      elem.itemAttribute.vegClassifier == "VEG"?
+      elem?.itemAttribute?.vegClassifier == "VEG"?
       <img src={vegIcon} className="w-4 rounded-sm" alt="" />:
       <img src={nonIcon} className="w-4" alt="" />
   }
@@ -143,9 +202,9 @@ export const Cart = () =>{
   <h1 className="font-semibold"> ₹{elem.price/100 || elem.defaultPrice/100} </h1>
 
   <div className="flex items-center mt-2">
-      <button className="text-violet-500 focus:bg-zinc-200 w-3 rounded-lg px-3 flex items-center justify-center border-[1.7px] border-zinc-400">+</button>
-      <h1 className="ml-2 mr-2">0</h1>
-      <button className="text-red-500 w-3 focus:bg-zinc-200 px-3 flex rounded-lg items-center justify-center border-[1.7px] border-zinc-400">-</button>
+      <button onClick={()=>addItem(elem)} className="text-violet-500 focus:bg-zinc-200 w-3 rounded-lg px-3 flex items-center justify-center border-[1.7px] border-zinc-400">+</button>
+      <h1 className="ml-2 mr-2"> {elem.quantity} </h1>
+      <button onClick={()=>decItem(elem)} className="text-red-500 w-3 focus:bg-zinc-200 px-3 flex rounded-lg items-center justify-center border-[1.7px] border-zinc-400">-</button>
   </div>
 
   </div>

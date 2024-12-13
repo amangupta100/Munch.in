@@ -14,7 +14,6 @@ export const MainPage = () =>{
     const [onyourmind,setonyourMind]  = useState([])
 
     const fetchData = async () => {
-                                   
        const data =await fetch(`${import.meta.env.VITE_FETCH_DATA_URL}/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`)
        const rData =await data.json()
 

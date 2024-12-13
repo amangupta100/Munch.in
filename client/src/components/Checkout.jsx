@@ -11,8 +11,8 @@ import { CartContext } from '../context/CartContext';
 import vegIcon from '../assets/299-2998556_vegetarian-food-symbol-icon-non-veg-symbol-png.png'
 import nonIcon from '../assets/images.png'
 import { IoCloseOutline } from 'react-icons/io5';
-import { PaymentBoxCont } from '../context/PaymentBoxCont';
-
+import { PaymentBoxCont } from '../context/PaymentBoxCont'
+import axios from 'axios'
 
 function UserDetails() {
 const [address,setAddress] = useState([])
@@ -174,6 +174,9 @@ const movetoNext = () =>{
 function OrderSumAndPayment() {
   const [orderSum,setOrderSum] = useState(true)
   const [paymentMode,setpayMode] = useState("")
+  const [responseId, setResponseId] = useState("");
+  const [loading,setLoading] = useState(false)
+
 
   const navigate = useNavigate()
 
@@ -182,6 +185,84 @@ function OrderSumAndPayment() {
   const {setActiveStep} = useContext(ActiveStepper)
 
   let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100 || curVal.defaultPrice/100)),0)
+
+  const loadScript = (src) => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+
+      script.src = src;
+
+      script.onload = () => {
+        resolve(true)
+      }
+      script.onerror = () => {
+        resolve(false)
+      }
+
+      document.body.appendChild(script);
+    })
+  }
+
+  const createRazorpayOrder =async (amount) => {
+    let data = JSON.stringify({
+      amount: amount * 100,
+      currency: "INR"
+    })
+
+    setLoading(true)
+    let config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url:`${import.meta.env.VITE_BACKEND_BASE_URL}/payment/orders`,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    }
+
+    axios.request(config)
+    .then((response) => {
+      handleRazorpayScreen(response.data.amount)
+      setLoading(false)
+    })
+    .catch((error) => {
+      ErrorToast("error at", error.message)
+    })
+  }
+
+  const handleRazorpayScreen = async(amount) => {
+    const res = await loadScript("https:/checkout.razorpay.com/v1/checkout.js")
+
+    if (!res) {
+      ErrorToast("Some error at razorpay screen loading")
+      return;
+    }
+
+    const options = {
+      key: 'rzp_test_49UGrKVElzxHaT',
+      amount: amount,
+      currency: 'INR',
+      name: "Munch.in",
+      description: "Payment to Munch.in",
+      image: "https://munch-in-amangupta100s-projects.vercel.app/assets/munchin-high-resolution-logo-transparent-cropped-_kqTsnzF.svg",
+      handler: function (response){
+        SuccessToast("Payment Successful")
+        navigate("/")
+        setPaymentBox(false)
+      },
+      prefill: {
+        name: "Munch.in",
+        email: "amangaq85@gmail.com"
+      },
+      theme: {
+        color: "#F4C430"
+      }
+    }
+
+    const paymentObject = new window.Razorpay(options)
+    paymentObject.open()
+  }
+
 
   const handlePayMode = (e) =>{
   e.preventDefault();
@@ -193,7 +274,7 @@ function OrderSumAndPayment() {
     setActiveStep(0)
   }
   else{
-
+createRazorpayOrder(totalPrice)
   }
 
   }
@@ -280,7 +361,10 @@ cartData.map((elem)=>{
   
 <div className="w-[530px] relative min-h-56 rounded-lg shadow-2xl shadow-zinc-600 bg-white">
 
-<IoCloseOutline onClick={()=>setPaymentBox(false)} className="text-2xl cursor-pointer absolute right-3 top-2"/>
+<IoCloseOutline onClick={()=>{
+  setPaymentBox(false)
+  setLoading(false)
+}} className="text-2xl cursor-pointer absolute right-3 top-2"/>
 
 <h1 className='text-center mt-8 text-xl font-semibold'>Payment Mode</h1>
 
@@ -300,8 +384,7 @@ cartData.map((elem)=>{
   <h1 className='font-semibold'>Pay Online</h1>
   </label>
 </div>
-<button onClick={handlePayMode} className="mt-8 mb-4 ml-4 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full">Confirm</button>
-
+<button onClick={handlePayMode} className="mt-8 mb-4 ml-4 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full"> {loading && <MoonLoader size={16} className='mr-2' />} Confirm</button>
 
 </div>
 
@@ -358,7 +441,7 @@ export const Checkout = () => {
             && <button className='bg-violet-400 py-3 px-5 rounded-lg  hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out' onClick={ () => setActiveStep(activeStep - 1) }>Previous</button>
         }
         { activeStep !== steps.length - 1
-          && <button className='bg-violet-400 py-3 mb-3 px-5 rounded-lg hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out' onClick={ () => selectedAddr ? movetoNext() : ErrorToast("Select a address to continue")}>Next</button>
+          && <button className={`bg-violet-400 py-3 mb-3 px-5 rounded-lg hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out ${activeStep>2?"cursor-not-allowed":""}`} onClick={ () => selectedAddr ? movetoNext() : ErrorToast("Select a address to continue")}>Next</button>
         }
       </div>
     </div>

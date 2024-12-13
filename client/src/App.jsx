@@ -16,6 +16,7 @@ import { VeriBoxCont } from "./context/VerifBox"
 import { SelectedAddCont } from "./context/SelectedAddCont"
 import {ActiveStepper} from "./context/ActiveStepper"
 import { PaymentBoxCont } from "./context/PaymentBoxCont"
+import { SeachPage } from "./components/SeachPage"
 
 export const App = () =>{
   
@@ -57,6 +58,7 @@ export const App = () =>{
 <Route path="/" element={<MainPage />} />
 <Route path="/menu/:id" element={<RestMenu />}/>
 <Route path="/checkout" element={<Checkout/>}/>
+<Route path="/search" element={<SeachPage/>} />
 <Route  path="*" element={<ComingSoon/>}/>
 <Route path="/cart" element={<Cart/>} />
 </Route>
@@ -82,6 +84,6 @@ export const App = () =>{
     </ActiveStepper.Provider>
 
    </PaymentBoxCont.Provider>
-    
+
   )
 }

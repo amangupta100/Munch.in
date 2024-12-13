@@ -118,11 +118,11 @@ export const Navbar =() =>{
 
        </div>
 
-       <div className="w-full sticky z-30 top-0 bg-white shadow-md shadow-gray-200 flex items-center justify-between lD:px-16 px-24 h-[75px] tb:px-12 lm:px-4 lD:h-[68px]">
+       <div className="w-full sticky z-30 top-0 bg-white shadow-md shadow-gray-200 flex items-center justify-between lD:px-16 px-24 h-[75px] tb:px-12 lm:px-4 vlm:px-7 lD:h-[68px]">
         
         <div className="flex items-center gap-12 lD:gap-7 lm:gap-4">
                 <NavLink to="/">
-                <img src={logo} onContextMenu={(e)=>e.preventDefault()} onDragStart={(e)=>e.preventDefault()} className='w-[13vw] lD:w-[17vw] tb:w-[22vw] lm:w-[36vw] cursor-pointer hover:scale-[1.04] transition-all mdm:w-[40vw] duration-300 h-[7vh]' alt="" />
+                <img src={logo} onContextMenu={(e)=>e.preventDefault()} onDragStart={(e)=>e.preventDefault()} className='w-[13vw] lD:w-[17vw] vlm:w-[28vw] tb:w-[22vw] lm:w-[36vw] cursor-pointer hover:scale-[1.04] transition-all mdm:w-[40vw] duration-300 h-[7vh]' alt="" />
                 </NavLink>
                 <div onClick={()=>setVis(!visible)} className="flex  hover:text-orange-500 items-center cursor-pointer">
                 <h1 className='text-lg lm:text-sm border-b-black border-b-[2px] hover:border-b-orange-400 transition-all duration-300 mb-2 font-semibold'>Other</h1>
@@ -132,7 +132,7 @@ export const Navbar =() =>{
                 </div>
         
                 <div className="flex items-center gap-4 lm:gap-2 text-zinc-800">
-                    <NavLink to="" className='flex items-center gap-2 font-[550] hover:text-orange-500 duration-300 transition-all'><CiSearch className='text-2xl'/></NavLink>
+                    <NavLink to="/search" className='flex items-center gap-2 font-[550] hover:text-orange-500 duration-300 transition-all'><CiSearch className='text-2xl'/></NavLink>
                   
                   {
                      auth.token.length>0?  
