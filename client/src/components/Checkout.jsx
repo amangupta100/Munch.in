@@ -231,8 +231,8 @@ function OrderSumAndPayment() {
   }
 
   const handleRazorpayScreen = async(amount) => {
-    const res = await loadScript("https:/checkout.razorpay.com/v1/checkout.js")
-
+    const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js")
+    console.log(res)
     if (!res) {
       ErrorToast("Some error at razorpay screen loading")
       return;
