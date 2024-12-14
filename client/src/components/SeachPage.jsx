@@ -107,7 +107,7 @@ let finalData = (resp?.data?.cards[0]?.groupedCard?.cardGroupMap?.RESTAURANT?.ca
  </div>
    :
     <div className='w-full h-full flex flex-col items-center justify-center'>
-      <img src={search} className='w-[45%]' alt="" />
+      <img src={search} className='w-[45%] tb:w-[64%] lm:w-[95%] ' alt="" />
       <h1 className='text-lg'>Search the favorite dish</h1>
     </div> :
    
@@ -142,14 +142,14 @@ let finalData = (resp?.data?.cards[0]?.groupedCard?.cardGroupMap?.RESTAURANT?.ca
    <img onDragStart={(e)=>e.preventDefault()} className="w-full h-[120px] object-cover rounded-2xl" src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/${cloudinaryImageId}`} alt="" />
    </div>
 
-   <div className="flex flex-col justify-center ml-4 max-w-[70%] ">
+   <div className="flex flex-col justify-center ml-4 max-w-[70%] lm:ml-8">
    
    <h1 className='text-sm font-extrabold text-zinc-600'> {name} </h1>
    
-   <div className="flex items-center mt-1">
+   <div className="flex items-center mt-1 ">
    <img src={star} className='w-4 text-gray-500 mt-1' alt="" />
-   <h1 className='text-sm text-zinc-500'> {avgRating} .  </h1>
-   <h1 className='text-sm text-zinc-500 ml-2'>  {slaString} </h1>
+   <h1 className='text-sm text-zinc-500'> {avgRating}  </h1>
+   <h1 className='text-sm text-zinc-500 ml-2 lm:hidden'>  {slaString} </h1>
    <h1 className='text-sm text-zinc-500 ml-2'>. {costForTwoMessage} </h1>
    </div>
 
@@ -164,7 +164,7 @@ let finalData = (resp?.data?.cards[0]?.groupedCard?.cardGroupMap?.RESTAURANT?.ca
 }
 </div> :   
  <div className='w-full h-full flex flex-col items-center justify-center'>
-    <img src={search} className='w-[45%]' alt="" />
+    <img src={search} className='w-[45%] tb:w-[63%] lm:w-[94%] ' alt="" />
     <h1 className='text-lg'>Search the favorite dish</h1>
   </div>
 
