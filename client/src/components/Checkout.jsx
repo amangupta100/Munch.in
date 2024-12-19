@@ -454,7 +454,7 @@ const AddressDet = ({i,elem}) =>{
   }
   return(
     <>
-     <div key={i} className='flex items-center mb-2 relative bg-zinc-400'>
+     <div key={i} className='flex items-center mb-2 relative'>
        <input type="radio" name="address" onClick={()=>{  setselecAddr(elem)}} className="mr-2 w-12 cursor-pointer"
               />
        <label htmlFor="">
