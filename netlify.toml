@@ -1,0 +1,12 @@
+[build]
+  base = "client"                # Base directory for the build
+  publish = "dist"               # Directory to publish
+  command = "npm run build"      # Build command
+
+[functions]
+  directory = "server/netlify/functions"  # Directory for serverless functions
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
