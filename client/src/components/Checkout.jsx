@@ -465,7 +465,7 @@ const AddressDet = ({i,elem}) =>{
         <hr className='border-zinc-400 border-[1.2px] mt-2 ' />
        </label>
       {
-        loading ? <MoonLoader size={16} /> :  <MdDeleteOutline onClick={()=>handleAddDel(i)} className='text-xl right-8 absolute cursor-pointer lm:top-0 lm:right-2'/>
+        loading ? <MoonLoader className='absolute cursor-pointer right-8 lm:top-0 lm:right-2' size={16} /> :  <MdDeleteOutline onClick={()=>handleAddDel(i)} className='text-xl right-8 absolute cursor-pointer lm:top-0 lm:right-2'/>
       }
       </div>
     </>
