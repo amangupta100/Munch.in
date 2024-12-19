@@ -13,6 +13,7 @@ import nonIcon from '../assets/images.png'
 import { IoCloseOutline } from 'react-icons/io5';
 import { PaymentBoxCont } from '../context/PaymentBoxCont'
 import axios from 'axios'
+import { MdDeleteOutline } from "react-icons/md";
 
 function UserDetails() {
 const [address,setAddress] = useState([])
@@ -67,7 +68,7 @@ if(number.length==10 && pincode && locality && address.length>0 && city.length>0
   setLoading(false);
   if (resp.success) {
     setAuth({ ...auth, token: resp.token });
-      SuccessToast("Details added successfully");
+      SuccessToast("Address added successfully");
       setForDetails({number:"",pincode:"",locality:"",address:"",city:"",State:""})
   } else {
       ErrorToast(resp.message); // Handle error case
@@ -100,19 +101,7 @@ const movetoNext = () =>{
     <h1 className='font-semibold inline-block mr-1'> {auth?.user.name} </h1>
     {
     address.map((elem,i)=>{
-     return(
-      <div key={i} className='flex items-center mb-2'>
-       <input type="radio" name="address" onClick={()=>{  setselecAddr(elem)}} className="mr-2 w-12 cursor-pointer"
-              />
-       <label htmlFor="">
-       <h1 className='text-sm inline-block'> {elem?.address} , </h1>
-        <h1 className='text-sm inline-block mr-1'> {elem?.city} , </h1>
-        <h1 className='text-sm inline-block ml-1 mr-1'> {elem?.State} - </h1>
-        <h1 className='text-sm font-semibold inline-block'> {elem.pincode} </h1>
-        <hr className='border-zinc-400 border-[1.2px] mt-2 ' />
-       </label>
-      </div>
-     )
+     return <AddressDet i={i} elem={elem} />
     })
    }
    <button onClick={()=>{
@@ -153,13 +142,12 @@ const movetoNext = () =>{
       
 
        </div>
-       <button onClick={handleDetSumbit} className="w-full mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
-        {
-            loading && <MoonLoader size={20} />
-        }
-        <IoMdAdd className='text-2xl font-bold'/>
-        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-1`}>Add Address</h1>
-        </button>
+       {
+        loading ? <button className="w-full disabled:cur mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300"><MoonLoader size={20}/></button> 
+        : 
+        <button onClick={handleDetSumbit} className="w-full mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">  <IoMdAdd className='text-2xl font-bold mr-1'/> Add Address</button>
+       }
+   
       </form>
     </div>
 
@@ -184,7 +172,7 @@ function OrderSumAndPayment() {
   const {paymentBox,setPaymentBox} = useContext(PaymentBoxCont)
   const {setActiveStep} = useContext(ActiveStepper)
 
-  let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100 || curVal.defaultPrice/100)),0)
+  let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100*curVal.quantity || curVal.defaultPrice/100*curVal.quantity)),0)
 
   const loadScript = (src) => {
     return new Promise((resolve) => {
@@ -232,7 +220,6 @@ function OrderSumAndPayment() {
 
   const handleRazorpayScreen = async(amount) => {
     const res = await loadScript("https://checkout.razorpay.com/v1/checkout.js")
-    console.log(res)
     if (!res) {
       ErrorToast("Some error at razorpay screen loading")
       return;
@@ -249,6 +236,7 @@ function OrderSumAndPayment() {
         SuccessToast("Payment Successful")
         navigate("/")
         setPaymentBox(false)
+        setActiveStep(0)
       },
       prefill: {
         name: "Munch.in",
@@ -303,11 +291,6 @@ cartData.map((elem)=>{
 <p className="mt-2"> {elem?.description?.slice(0,60)+"..."} </p>
 <h1 className="font-semibold"> ₹{elem.price/100 || elem.defaultPrice/100} </h1>
 
-<div className="flex items-center mt-2">
-   <button className="text-violet-500 focus:bg-zinc-200 w-3 rounded-lg px-3 flex items-center justify-center border-[1.7px] border-zinc-400">+</button>
-   <h1 className="ml-2 mr-2">0</h1>
-   <button className="text-red-500 w-3 focus:bg-zinc-200 px-3 flex rounded-lg items-center justify-center border-[1.7px] border-zinc-400">-</button>
-</div>
 
 </div>
 <div className="w-[30%] ">
@@ -447,5 +430,44 @@ export const Checkout = () => {
     </div>
 
     </div>
+  )
+}
+
+const AddressDet = ({i,elem}) =>{
+  const [loading,setLoading] = useState(false)
+  const {auth,setAuth} = useContext(AuthenContext)
+
+  const handleAddDel =async (ind) =>{
+    setLoading(true)
+  const req = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/deleteAddr`,{
+    method:"POST",headers:{
+      'Content-Type': 'application/json',
+    },body:JSON.stringify({id:auth.user.id,addrId:ind})
+  })
+  const resp = await req.json()
+  setLoading(false)
+  const {success,message} = resp
+  if(success){
+    SuccessToast(message)
+    setAuth({ ...auth, token: resp.token })
+  }
+  }
+  return(
+    <>
+     <div key={i} className='flex items-center mb-2 relative bg-zinc-400'>
+       <input type="radio" name="address" onClick={()=>{  setselecAddr(elem)}} className="mr-2 w-12 cursor-pointer"
+              />
+       <label htmlFor="">
+       <h1 className='text-sm inline-block'> {elem?.address} , </h1>
+        <h1 className='text-sm inline-block mr-1'> {elem?.city} , </h1>
+        <h1 className='text-sm inline-block ml-1 mr-1'> {elem?.State} - </h1>
+        <h1 className='text-sm font-semibold inline-block'> {elem.pincode} </h1>
+        <hr className='border-zinc-400 border-[1.2px] mt-2 ' />
+       </label>
+      {
+        loading ? <MoonLoader size={16} /> :  <MdDeleteOutline onClick={()=>handleAddDel(i)} className='text-xl right-8 absolute cursor-pointer lm:top-0 lm:right-2'/>
+      }
+      </div>
+    </>
   )
 }

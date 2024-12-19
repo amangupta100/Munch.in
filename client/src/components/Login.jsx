@@ -11,6 +11,8 @@ import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import {app}  from "./AuthGoogle";
 import { AuthenContext } from "../context/Authen";
 import MoonLoader from "react-spinners/MoonLoader"
+import { MdOutlinePassword } from "react-icons/md";
+import { CiUser } from "react-icons/ci";
 
 export const Login = () =>{
    
@@ -106,26 +108,28 @@ export const Login = () =>{
 
         <form action="" className="flex flex-col gap-2 mt-5">
             
-        <div className="mb-6">
+        <div className="mb-6 relative">
             <h1 className="text-lg font-semibold">Email</h1>
-            <input value={inpVal.email} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="email" type="text" placeholder="Enter User Email" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-4 mt-2 rounded-xl py-3" />
+            <CiUser className="absolute top-[48px] left-3 text-2xl"/>
+            <input value={inpVal.email} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="email" type="text" placeholder="Enter User Email" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-12 mt-2 rounded-xl py-3" />
         </div>
             
         <div className="relative">
+        <MdOutlinePassword className="absolute text-2xl top-[48px] left-3  "/>
             <h1 className="text-lg font-semibold">Password</h1>
             {
        vis?
       (
         <>
         <AiFillEyeInvisible onClick={()=>setVis(!vis)} className="text-xl absolute right-5 top-[48px] cursor-pointer"/>
-        <input value={inpVal.password} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" type="text" className="w-full bg-zinc-100 px-4 focus:shadow-lg focus:shadow-zinc-200 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
+        <input value={inpVal.password} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" type="text" className="w-full bg-zinc-100 px-12 focus:shadow-lg focus:shadow-zinc-200 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
        </>
       )
        :
       (
         <>
         <IoEye onClick={()=>setVis(!vis)} className="text-xl absolute right-5 top-[48px] cursor-pointer"/>
-        <input value={inpVal.password} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" type="password"  className="w-full bg-zinc-100 focus:shadow-lg focus:shadow-zinc-200 px-4 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
+        <input value={inpVal.password} onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" type="password"  className="w-full bg-zinc-100 focus:shadow-lg focus:shadow-zinc-200 px-12 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
        </>
       )
        }
