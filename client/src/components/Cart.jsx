@@ -11,9 +11,9 @@ import { IoCloseOutline } from "react-icons/io5";
 import { ErrorToast, SuccessToast } from "./NotToast"
 import OTPInput from "otp-input-react";
 import { MdOutlineEdit } from "react-icons/md";
-import MoonLoader from 'react-spinners/MoonLoader'
 import { VeriBoxCont } from "../context/VerifBox"
 import { AiOutlineDelete } from "react-icons/ai";
+import { Oval } from "react-loader-spinner"
 
 export const Cart = () =>{
     const {cartData,setCartData} = useContext(CartContext)
@@ -273,11 +273,19 @@ ErrorToast("Item deleted from cart")
 <h1>Enter OTP sent to {email}</h1>
 <form action="" className="flex flex-col" onSubmit={verifyOTP}>
 <OTPInput value={otp} onChange={setOTP} autoFocus OTPLength={4} otpType="number" disabled={false} secure />
-<button className="mt-3 py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg">
-  {
-    loading && <MoonLoader className="mr-3" size={20}/>
-  }
-  <h1>Verify otp</h1>
+<button className={`mt-3 ${loading?"cursor-not-allowed":""} py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg`}>
+{
+        loading ? <Oval
+        visible={true}
+        height="30"
+        width="30"
+        color="#FFFFFF"
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /> : <>
+         <h1 className="ml-2">Verify OTP</h1></>
+       }
   </button>
 </form>
 </div>
@@ -288,11 +296,19 @@ ErrorToast("Item deleted from cart")
 <h1>Enter email to verify OTP</h1>
 <form action="" className="flex flex-col" onSubmit={handleSendOTP}>
 <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" className="bg-zinc-300 mt-1 focus:outline-none text-lg py-3 px-5 rounded-lg" />
-  <button className="mt-3 py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg">
+  <button className={`mt-3 ${loading ?"cursor-no-drop bg-violet-300":""} py-3 mb-3 flex items-center justify-center text-white hover:text-black bg-violet-700 hover:bg-violet-400 duration-200 transition-all ease-in-out cursor-pointer rounded-lg`}>
   {
-    loading && <MoonLoader className="mr-3" size={20}/>
-  }
-  <h1>Send otp</h1>
+         loading ? <Oval
+         visible={true}
+         height="30"
+         width="30"
+         color="#FFFFFF"
+         ariaLabel="oval-loading"
+         wrapperStyle={{}}
+         wrapperClass=""
+         /> : <>
+          <h1 className="ml-2">Send OTP</h1></>
+        }
   </button>
 </form>
 </div>

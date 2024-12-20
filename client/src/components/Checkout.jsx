@@ -15,6 +15,7 @@ import { PaymentBoxCont } from '../context/PaymentBoxCont'
 import axios from 'axios'
 import { MdDeleteOutline } from "react-icons/md";
 import { MdOutlineEdit } from "react-icons/md";
+import { Oval } from 'react-loader-spinner';
 
 function UserDetails() {
 const [address,setAddress] = useState([])
@@ -142,7 +143,17 @@ const movetoNext = () =>{
 
        </div>
        {
-        loading ? <button className="w-full disabled:cur mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300"><MoonLoader size={20}/></button> 
+        loading ? <button className="w-full disabled:cur mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+          <Oval
+                  visible={true}
+                  height="30"
+                  width="30"
+                  color="#FFFFFF"
+                  ariaLabel="oval-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                  />
+        </button> 
         : 
         <button onClick={handleDetSumbit} className="w-full mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">  <IoMdAdd className='text-2xl font-bold mr-1'/> Add Address</button>
        }

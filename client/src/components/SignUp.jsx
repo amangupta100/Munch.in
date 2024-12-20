@@ -7,10 +7,13 @@ import { ErrorToast, SuccessToast } from "./NotToast";
 import { AuthenContext } from "../context/Authen";
 import { ParamCont } from "../context/ParamCont";
 import { IoMdArrowBack } from "react-icons/io";
-import MoonLoader from "react-spinners/MoonLoader"
 import { FcGoogle } from "react-icons/fc";
 import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import {app}  from "./AuthGoogle";
+import {Oval} from 'react-loader-spinner'
+import { CiUser } from "react-icons/ci";
+import { AiOutlineMail } from "react-icons/ai";
+import { MdOutlinePassword } from "react-icons/md";
 
 export const SignUp = () =>{
     const navigate = useNavigate()
@@ -104,53 +107,72 @@ export const SignUp = () =>{
 
         <form action="" className="flex flex-col gap-2 mt-5">
 
-        <div className="mb-6">
+        <div className="mb-6 relative">
             <h1 className="text-lg font-semibold">Name</h1>
-            <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} type="text" value={inpval.name} name="name" placeholder="Enter Name" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-4 mt-2 rounded-xl py-3" />
+            <CiUser className="absolute top-[48px] text-2xl left-3 "/>
+            <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} type="text" value={inpval.name} name="name" placeholder="Enter Name" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-12 mt-2 rounded-xl py-3" />
         </div>
             
             
-        <div className="mb-6">
+        <div className="mb-6 relative">
+            <AiOutlineMail className="text-2xl absolute top-[48px] left-3 "/>
             <h1 className="text-lg font-semibold">Email</h1>
-            <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} type="text" value={inpval.email} name="email" placeholder="Enter User Email" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-4 mt-2 rounded-xl py-3" />
+            <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} type="text" value={inpval.email} name="email" placeholder="Enter User Email" className="w-full focus:outline-none focus:shadow-lg focus:shadow-zinc-200 bg-zinc-100 px-12 mt-2 rounded-xl py-3" />
         </div>
             
         <div className="relative">
             <h1 className="text-lg font-semibold">Password</h1>
+            <MdOutlinePassword className="text-2xl absolute left-3 top-[48px] "/>
             {
        vis?
       (
         <>
         <AiFillEyeInvisible onClick={()=>setVis(!vis)} className="text-xl absolute right-5 top-[48px] cursor-pointer"/>
-        <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" value={inpval.password} type="text" className="w-full bg-zinc-100 px-4 focus:shadow-lg focus:shadow-zinc-200 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
+        <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" value={inpval.password} type="text" className="w-full bg-zinc-100 px-12 focus:shadow-lg focus:shadow-zinc-200 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
        </>
       )
        :
       (
         <>
         <IoEye onClick={()=>setVis(!vis)} className="text-xl absolute right-5 top-[48px] cursor-pointer"/>
-        <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" value={inpval.password} type="password"  className="w-full bg-zinc-100 focus:shadow-lg focus:shadow-zinc-200 px-4 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
+        <input onChange={(e)=>handleInpChange(e.target.name,e.target.value)} name="password" value={inpval.password} type="password"  className="w-full bg-zinc-100 focus:shadow-lg focus:shadow-zinc-200 px-12 py-3 mt-2 focus:outline-none rounded-xl" placeholder="Enter password" />
        </>
       )
        }
         </div>
 
         <h1 className="mt-4">Already have an account ? <NavLink to="/login" className="text-blue-500 ml-1 font-semibold"> Login </NavLink> </h1>
-        <button onClick={handleFormSubmit} className="w-full flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+        <button onClick={handleFormSubmit} className={`w-full ${loading?"cursor-not-allowed bg-violet-300":""} flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300`}>
         {
-            loading && <MoonLoader size={20} />
-        }
-        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>SignUp User</h1>
+        loading ? <Oval
+        visible={true}
+        height="30"
+        width="30"
+        color="#FFFFFF"
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /> : <>
+         <h1 className="ml-2">SignUp User</h1></>
+       }
         </button>
         <h1 className="text-lg text-center">Or</h1>
         </form>
 
-        <button onClick={handleGoogleAuth} className="flex items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300">
+        <button onClick={handleGoogleAuth} className={`flex ${loadGoogl?"cursor-not-allowed bg-violet-300":""} items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300`}>
         {
-            loadGoogl && <MoonLoader size={20} />
-        }
-        <FcGoogle className="text-2xl ml-3"/>
-       <h1 className="ml-2">Continue With Google</h1>
+        loadGoogl ? <Oval
+        visible={true}
+        height="30"
+        width="30"
+        color="#FFFFFF"
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /> : <>
+         <FcGoogle className="text-2xl ml-3"/>
+         <h1 className="ml-2">Continue With Google</h1></>
+       }
         </button>
 
         </div>

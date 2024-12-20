@@ -10,9 +10,9 @@ import { ParamCont } from "../context/ParamCont";
 import {getAuth, GoogleAuthProvider, signInWithPopup} from 'firebase/auth'
 import {app}  from "./AuthGoogle";
 import { AuthenContext } from "../context/Authen";
-import MoonLoader from "react-spinners/MoonLoader"
 import { MdOutlinePassword } from "react-icons/md";
 import { CiUser } from "react-icons/ci";
+import {Oval} from 'react-loader-spinner'
 
 export const Login = () =>{
    
@@ -136,21 +136,37 @@ export const Login = () =>{
         </div>
 
         <h1 className="mt-4">Don't have any account yet ? <NavLink to="/signUp" className="text-blue-500 ml-1 font-semibold"> SignUp </NavLink> </h1>
-        <button onClick={handleFormSubmit} className="w-full flex items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
+        <button onClick={handleFormSubmit} className={`w-full flex ${loading?"cursor-not-allowed bg-violet-300":""} items-center justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300`}>
         {
-            loading && <MoonLoader size={20} />
-        }
-        <h1 className={`${loading?"disabled:cursor-not-allowed":""} ml-3`}>Login User</h1>
+        loading ? <Oval
+        visible={true}
+        height="30"
+        width="30"
+        color="#FFFFFF"
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /> : <>
+         <h1 className="ml-2">Login User</h1></>
+       }
         </button>
         <h1 className="text-lg text-center">Or</h1>
        
         </form>
-        <button onClick={handleGoogleAuth} className="flex items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300">
-        {
-            loadGoogl && <MoonLoader size={20} />
-        }
-        <FcGoogle className="text-2xl ml-3"/>
-       <h1 className="ml-2">Continue With Google</h1>
+        <button onClick={handleGoogleAuth} className={`flex ${loadGoogl?"cursor-not-allowed bg-violet-300":""} items-center w-full justify-center rounded-xl bg-zinc-300 py-3 hover:bg-zinc-400 transition-all duration-300`}>
+       {
+        loadGoogl ? <Oval
+        visible={true}
+        height="30"
+        width="30"
+        color="#FFFFFF"
+        ariaLabel="oval-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
+        /> : <>
+         <FcGoogle className="text-2xl ml-3"/>
+         <h1 className="ml-2">Continue With Google</h1></>
+       }
         </button>
         </div>
         
