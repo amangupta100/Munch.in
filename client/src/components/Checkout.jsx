@@ -14,6 +14,7 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { PaymentBoxCont } from '../context/PaymentBoxCont'
 import axios from 'axios'
 import { MdDeleteOutline } from "react-icons/md";
+import { MdOutlineEdit } from "react-icons/md";
 
 function UserDetails() {
 const [address,setAddress] = useState([])
@@ -81,8 +82,6 @@ else{
 
 const movetoNext = () =>{
   setActiveStep(activeStep+1) 
-  setselecAddr()
-  
 }
 
   return(
@@ -160,17 +159,16 @@ const movetoNext = () =>{
 
 
 function OrderSumAndPayment() {
-  const [orderSum,setOrderSum] = useState(true)
   const [paymentMode,setpayMode] = useState("")
-  const [responseId, setResponseId] = useState("");
   const [loading,setLoading] = useState(false)
 
 
   const navigate = useNavigate()
 
+  const {selectedAddr,setselecAddr} = useContext(SelectedAddCont)
   const {cartData} = useContext(CartContext)
   const {paymentBox,setPaymentBox} = useContext(PaymentBoxCont)
-  const {setActiveStep} = useContext(ActiveStepper)
+  const {activeStep,setActiveStep} = useContext(ActiveStepper)
 
   let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100*curVal.quantity || curVal.defaultPrice/100*curVal.quantity)),0)
 
@@ -306,7 +304,8 @@ cartData.map((elem)=>{
 
 <div className="w-[40%] tb:px-10 lm:px-2 px-5 py-3 tb:p-0 tb:w-full tb:mb-4">
  
-   <h1 className="text-xl font-bold">Summary</h1>
+ <div className="">
+ <h1 className="text-xl font-bold">Summary</h1>
   <div className="flex justify-between items-center mt-2">
   <h1 className="text-base"> Subtotal </h1>
   <h1 className="font-bold"> ₹{totalPrice} </h1>
@@ -326,6 +325,20 @@ cartData.map((elem)=>{
   <h1 className="font-bold"> ₹{totalPrice} </h1>
   </div>
   <hr className="border-zinc-400" />
+ </div>
+
+ <div className="mt-5 bg-violet-50 relative text-base py-3">
+  <MdOutlineEdit onClick={()=>{
+    setselecAddr()
+    setActiveStep(activeStep-1)
+  }} className='absolute right-2 top-2 text-2xl'/>
+  <h1 className='font-extrabold text-lg mb-2'>Shipping Address Details</h1>
+  <h1>Phone Number - {selectedAddr.number}</h1>
+  <h1>Pincode - {selectedAddr.pincode}</h1>
+  <h1>State -{selectedAddr.State} </h1>
+  <h1> City - {selectedAddr.city} </h1>
+  <h1> Locality - {selectedAddr.address} </h1>
+ </div>
  
  
 
@@ -388,7 +401,7 @@ function Confirmation() {
 
 export const Checkout = () => {
 
-  const {selectedAddr,setselecAddr} = useContext(SelectedAddCont)
+  const {selectedAddr} = useContext(SelectedAddCont)
   const {activeStep,setActiveStep} = useContext(ActiveStepper)
 
   function getSectionComponent() {
@@ -402,7 +415,7 @@ export const Checkout = () => {
 
   const movetoNext = () =>{
     setActiveStep(activeStep+1) 
-    setselecAddr()
+    
   }
 
   const steps = [
@@ -424,7 +437,7 @@ export const Checkout = () => {
             && <button className='bg-violet-400 py-3 px-5 rounded-lg  hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out' onClick={ () => setActiveStep(activeStep - 1) }>Previous</button>
         }
         { activeStep !== steps.length - 1
-          && <button className={`bg-violet-400 py-3 mb-3 px-5 rounded-lg hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out ${activeStep>2?"cursor-not-allowed":""}`} onClick={ () => selectedAddr ? movetoNext() : ErrorToast("Select a address to continue")}>Next</button>
+          && <button className={`bg-violet-400 py-3 mb-3 px-5 rounded-lg hover:bg-violet-700 hover:text-white transition-all duration-200 ease-in-out ${activeStep>=1?"hidden":""}`} onClick={ () => selectedAddr ? movetoNext() : ErrorToast("Select a address to continue")}>Next</button>
         }
       </div>
     </div>
@@ -436,6 +449,7 @@ export const Checkout = () => {
 const AddressDet = ({i,elem}) =>{
   const [loading,setLoading] = useState(false)
   const {auth,setAuth} = useContext(AuthenContext)
+  const {setselecAddr} = useContext(SelectedAddCont)
 
   const handleAddDel =async (ind) =>{
     setLoading(true)

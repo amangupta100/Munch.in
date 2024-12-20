@@ -16,7 +16,7 @@ export const FrontPage = () => {
           <h1 className='font-bold first-letter:text-4xl mt-2 mtb:text-xl mtb:first-letter:text-5xl lm:first-letter:font-extrabold lm:first-letter:font-serif lm:font-normal'>Fastest Delivery Ever</h1>
          <NavLink to="/search">
          <button className="flex items-center gap-2 my-3 px-8 py-4 bg-slate-200 hover:bg-slate-400 duration-300 ease-in-out transition-all hover:rounded-full hover:text-white">
-           <h1 className='font-medium text-[#414141]'>SHOP NOW</h1>
+           <h1 className='font-medium text-[#414141]'>Order NOW</h1>
             <p className='w-10 h-[2px] bg-[#414141] '></p>
            </button>
          </NavLink>

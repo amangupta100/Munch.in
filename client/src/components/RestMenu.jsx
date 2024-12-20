@@ -190,22 +190,7 @@ if(card.itemCards){
 
 }
 else{
-   const {title,categories} = card
-   const [open,setOpen] = useState(true)
-const handleToggle = () =>{
-    setOpen(!open)
-}
-   return(
-    <div className="mt-7">
-     <div onClick={handleToggle} className="flex cursor-pointer w-full px-6 py-4 rounded-xl bg-zinc-300 shadow-lg shadow-zinc-300 justify-between">
-        <h1 className="font-extrabold"> {title} ({categories.length}) </h1>
-        {
-            open?<IoIosArrowUp className="text-xl" />:<IoIosArrowDown className="text-xl"/>
-        }
-    </div>
-    <h1 className="font-extrabold">{title}</h1>
-    </div>
-   ) 
+  null
 }
 
 }
@@ -280,11 +265,12 @@ return(
                     }
 
                 </div>
-                   
-                <p> {readMore? description+"...":description.slice(0,80)+"... " }
-                    <button onClick={()=>setReadMore(!readMore)} className={`${readMore?"invisible":"visible"} text-blue-500 font-semibold`}>Read More</button>
-                    <button onClick={()=>setReadMore(!readMore)} className={`text-blue-500 font-semibold ${readMore?"visible":"invisible"}`}> Read Less </button> 
-                    </p>
+               {
+                description ?  <p> {readMore? description:description.slice(0,80)+"... " }
+                <button onClick={()=>setReadMore(!readMore)} className={`${readMore?"hidden":"visible"} text-blue-500 font-semibold`}>Read More</button>
+                <button onClick={()=>setReadMore(!readMore)} className={`text-blue-500 font-semibold ${readMore?"visible ml-3":"invisible"}`}> Read Less </button> 
+                </p> : null
+               }
             </div>
 
             <div className="w-[30%] lm:w-[35%] pt-3 md:w-[20%] relative h-full">
