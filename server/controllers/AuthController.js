@@ -2,8 +2,8 @@ const userModel = require("../model/userModel")
 const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
-const genToken = (id,name,addresses)=>{
-    return jwt.sign({id,name,addresses},process.env.JWT_SECRET)
+const genToken = (id,name,addresses,imagePath)=>{
+    return jwt.sign({id,name,addresses,imagePath},process.env.JWT_SECRET)
 }
 
 const signUp =async (req,res) =>{
@@ -45,7 +45,7 @@ const login =async (req,res) =>{
     else{
   await bcrypt.compare(password,user.password,(err,result)=>{
     if(result){
-        res.status(201).json({message:"Login successfully",success:true,token:genToken(user._id,user.name,user.addresses),user:{name:user.name,isEmailVerf:user.isEmailVerified,id:user._id}})
+        res.status(201).json({message:"Login successfully",success:true,token:genToken(user._id,user.name,user.addresses,user.imagePath),user:{name:user.name,isEmailVerf:user.isEmailVerified,email:user.email,id:user._id,profUrl:user.imagePath}})
     }
     else{
      res.status(403).json({message:"Email or password is wrong",success:false})
@@ -68,25 +68,20 @@ const googleLogin = async (req, res) => {
     const { name, email, photo } = req.body;
 
     try {
-        // Check if the user already exists
-        let user = await userModel.findOne({ email });
-
+        let user = await userModel.findOne({ email })
         if (!user) {
-            // Create a new user without a password
             user = new userModel({
                 name,
                 email,
                 photo,
                 isEmailVerified:true,
-                // Do not set password here
             });
             await user.save();
         }
 
-        // Generate a token and respond
-        const token = genToken(user._id,user.name,user.addresses);// Implement token generation logic
+        const token = genToken(user._id,user.name,user.addresses,user.imagePath);
         let id = user._id
-        res.status(200).json({ success: true, token, user:{name,email,id} });
+        res.status(200).json({ success: true, token, user:{name,email,id,profUrl:user.imagePath} });
     } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: error.message });

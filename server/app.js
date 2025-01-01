@@ -7,6 +7,8 @@ const cookieParser = require("cookie-parser")
 const Details = require("./router/DetailsRouter")
 const EmailVerfRouter = require("./router/EmailVerfRouter")
 const PaymentRouter = require("./router/PaymentRouter")
+const PhotoUpload = require("./router/UplPhoRout")
+const fileUpload = require("express-fileupload")
 
 require("dotenv").config()
 mongConn()
@@ -23,5 +25,9 @@ app.use("/auth",authRouter)
 app.use("/user",Details)
 app.use("/verifyEmail",EmailVerfRouter)
 app.use("/payment",PaymentRouter)
+app.use("/photo",PhotoUpload)
+app.use(fileUpload({
+  useTempFiles:true
+}))
 
 app.listen(process.env.PORT)

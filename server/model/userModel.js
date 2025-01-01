@@ -17,6 +17,12 @@ const userModel =mongoDb.Schema({
     },
     addresses: {
         type:Array,default:[]
+    },
+    imagePath:{
+      type:String,default:""
+    },
+    Order:{
+      type:Array,default:[]
     }
   }, {
     timestamps: true,

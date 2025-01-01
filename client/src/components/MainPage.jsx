@@ -30,7 +30,8 @@ export const MainPage = () =>{
         ).card?.card?.imageGridCards?.info;
         setonyourMind(onminddata)
     }
-  
+
+
     useEffect(()=>{
         fetchData()
     },[lat,lng])

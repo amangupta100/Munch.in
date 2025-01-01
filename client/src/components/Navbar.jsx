@@ -4,7 +4,7 @@ import { CiUser } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { IoIosArrowDown } from "react-icons/io";
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Coordinate, Visibility } from '../context/sideOpen';
 import { IoMdClose } from "react-icons/io";
 import { TiLocation } from "react-icons/ti";
@@ -13,15 +13,18 @@ import { CartContext } from '../context/CartContext';
 import { AuthenContext } from '../context/Authen';
 import { SlLogout } from "react-icons/sl";
 import { SuccessToast } from './NotToast';
+import { ProfileImage } from '../context/ProfileImage';
 
 export const Navbar =() =>{
-   const {coord,setCord} = useContext(Coordinate)
-   const {visible,setVis} = useContext(Visibility)
    const [srcRes,setsearchRes] = useState([])
    const [addr,setAddr] = useState(null)
    const [inpVal,setInp] = useState('')
-   const {auth} = useContext(AuthenContext)
    const [profVis,setProfVis] = useState(false)
+
+   const {auth,setAuth} = useContext(AuthenContext)
+   const {coord,setCord} = useContext(Coordinate)
+   const {ProfileUrl,setProfileUrl} = useContext(ProfileImage)
+   const {visible,setVis} = useContext(Visibility)
 
    const searchRes =async (val) =>{
    if(val=="") return
@@ -52,8 +55,6 @@ export const Navbar =() =>{
       setInp('')
    }
    
-   const {setAuth} = useContext(AuthenContext)
-   const navigate = useNavigate()
    const handleLogout = () =>{
       setAuth({
          ...auth,user:null,token:''
@@ -135,7 +136,7 @@ export const Navbar =() =>{
                     <NavLink to="/search" className='flex items-center gap-2 font-[550] hover:text-orange-500 duration-300 transition-all'><CiSearch className='text-2xl'/></NavLink>
                   
                   {
-                     auth.token.length>0?  
+                     auth?.token.length>0?  
                      <>
                      <div className="relative hover:text-orange-500 duration-300 transition-all">
                     <NavLink to="/cart" className='flex z-40 items-center gap-2 font-[550] '> <IoBagOutline className='text-2xl'/></NavLink>
@@ -143,12 +144,16 @@ export const Navbar =() =>{
                     </div>
                   
                      <div className="relative">
-                   <button onClick={()=>setProfVis(!profVis)} className='bg-black hover:text-orange-400 hover:bg-zinc-700 text-white px-[12px] py-[5px] rounded-full text-lg'> {auth.user.name[0]} </button>
+                     <div  onClick={()=>setProfVis(!profVis)} className="w-12 hover:bg-zinc-300 transition-all duration-300 ease-in-out cursor-pointer h-12 flex items-center justify-center bg-white border border-zinc-300 rounded-full">
+                   {
+                     ProfileUrl && ProfileUrl.length > 0 ? <img className='w-full h-full rounded-full' src={ProfileUrl} alt="" /> : <h1 className='text-xl'>{auth.user.name[0]}</h1>
+                   }
+                     </div>
                     
                     {
-                     profVis &&  <div onMouseLeave={()=>setProfVis(!profVis)} className="absolute top-10 py-4 px-3 right-0 w-40  bg-zinc-200 rounded-xl">
-                     <NavLink className="flex items-center"><CiUser className='text-2xl'/> <h1 className='ml-2'>User</h1></NavLink>
-                     <button onClick={handleLogout} className=' mt-2 flex items-center'>
+                     profVis &&  <div onMouseLeave={()=>setProfVis(!profVis)} className="absolute top-10 py-4 px-2 right-0 w-40  bg-zinc-200 rounded-xl">
+                     <NavLink to="/user" className="flex items-center hover:bg-zinc-100 py-2 rounded-lg px-2"><CiUser className='text-2xl'/> <h1 className='ml-2'>User</h1></NavLink>
+                     <button onClick={handleLogout} className=' mt-2 flex items-center hover:bg-zinc-100 py-2 rounded-lg px-2 w-full'>
                         <SlLogout/>
                      <h1 className='ml-3'>Logout</h1>
                      </button>

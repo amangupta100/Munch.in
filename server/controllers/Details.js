@@ -1,8 +1,15 @@
 const jwt = require("jsonwebtoken")
 const userModel = require("../model/userModel")
+const cloudinary = require("cloudinary").v2
 
-const genToken = (id,name,addresses) =>{
-    return jwt.sign({name,id,addresses},process.env.JWT_SECRET)
+cloudinary.config({
+    cloud_name:"ddad6pdhx",
+    api_key:"288566453969488",
+    api_secret:"r_lCQy7DoWGzuvBGcZwmEEfed6k"
+})
+
+const genToken = (id,name,addresses,imagePath) =>{
+    return jwt.sign({name,id,addresses,imagePath},process.env.JWT_SECRET)
 }
 
 const details = (req,res) =>{
@@ -29,7 +36,7 @@ if(!result) res.json({success:false,message:"User not found"})
 else{
     result.addresses.push(data);
     await result.save();
-    let token = genToken(result._id,result.name,result.addresses)
+    let token = genToken(result._id,result.name,result.addresses,result.imagePath)
     res.json({success:true,message:"Address Updated Successfully",result,token})
 }
 }
@@ -46,27 +53,23 @@ const checkToken =async (req,res) =>{
 }
 
 const deleteAddr = async (req, res) => {
-    const { id, addrId } = req.body; // Assuming addressIndex is the index of the address to be deleted
+    const { id, addrId } = req.body;
 
     try {
-        // Step 1: Find the user by ID
         const user = await userModel.findById(id);
         
         if (!user) {
             return res.status(404).json({ success: false, message: "User  not found" });
         }
 
-        // Step 2: Check if the index is valid
         if (addrId < 0 || addrId >= user.addresses.length) {
             return res.status(400).json({ success: false, message: "Invalid address index" });
         }
 
-        // Step 3: Remove the address from the array using splice
         user.addresses.splice(addrId, 1);
 
-        // Step 4: Save the updated user document
         await user.save();
-        let token = genToken(user._id,user.name,user.addresses)
+        let token = genToken(user._id,user.name,user.addresses,user.imagePath)
         res.json({ success: true, message: "Address deleted successfully", token });
     } catch (error) {
         console.error("Error deleting address:", error); // Log the error for debugging
@@ -74,5 +77,64 @@ const deleteAddr = async (req, res) => {
     }
 };
 
+const uploadPhoto =async (req,res) =>{
+const { userId } = req.body
+if(!req.file) return res.json({success:false,message:"File is required"})
+else{
+    if (!userId) {
+        return res.status(400).json({success:false,message:"UserId is required"});
+      }
+      else{
+        const x= await cloudinary.uploader.upload(req.file.path)
+        try {
+            const user = await userModel.findOneAndUpdate(
+              { _id: userId },
+              { imagePath: x.secure_url },
+              { new: true, upsert: true }
+            );
+            const token = genToken(user._id,user.name,user.addresses,user.imagePath)
+            res.json({success:true,message:"Image uploaded successfully",token,profUrl:user.imagePath});
+          } catch (error) {
+            console.error('Error updating user:', error);
+            res.status(500).json({success:false ,error: 'Error updating user' });
+          }
+      }
+}
+}
 
-module.exports = {details,updatedDetails,checkToken,deleteAddr}
+const order = async (req, res) => {
+    const { id, methodPay, payDate, Items,amount } = req.body;
+    const user = await userModel.findById(id);
+
+    try {
+        if (!user) {
+            return res.json({ success: false, message: "User  does not exist" });
+        } else {
+            const orderData = {
+                methodPay,
+                payDate,amount,
+                Items
+            };
+            user.Order.push(orderData);
+            await user.save();
+            res.json({ success: true, message: "Order saved successfully",orders:user.Order });
+        }
+    } catch (err) {
+        res.json({ success: false, message: err.message });
+    }
+};
+
+const getOrdersDet =async (req,res) =>{
+const {id} = req.body
+try{
+const result = await userModel.findById(id)
+if(!result) return res.json({success:false,message:"User does not exist"})
+else{
+    res.json({orders:result.Order,success:true})
+}
+}catch(err){
+    res.json({success:false,message:err.message})
+}
+}
+
+module.exports = {details,updatedDetails,checkToken,deleteAddr,uploadPhoto,order,getOrdersDet}

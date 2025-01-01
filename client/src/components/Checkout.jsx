@@ -16,6 +16,8 @@ import axios from 'axios'
 import { MdDeleteOutline } from "react-icons/md";
 import { MdOutlineEdit } from "react-icons/md";
 import { Oval } from 'react-loader-spinner';
+import { PaymentDet } from '../context/PaymentDet';
+import { ProfileImage } from '../context/ProfileImage';
 
 function UserDetails() {
 const [address,setAddress] = useState([])
@@ -23,9 +25,10 @@ const [formDet,setForDetails] = useState({number:"",pincode:"",locality:"",addre
 const [loading,setLoading] = useState(false)
 
 const {auth,setAuth} = useContext(AuthenContext)
-const {selectedAddr,setselecAddr} = useContext(SelectedAddCont)
+const {selectedAddr} = useContext(SelectedAddCont)
 const {activeStep,setActiveStep} = useContext(ActiveStepper)
 const navigate = useNavigate()
+const {ProfileUrl,setProfileUrl} = useContext(ProfileImage)
 
 const handleFormDet = (value,name) =>{
 setForDetails({...formDet,[name]:value})
@@ -46,6 +49,7 @@ useEffect(() => {
       });
       const response = await req.json();
       if (response.success && response.decoded && response.decoded.addresses) {
+        setProfileUrl(response.decoded.imagePath)
           setAddress(response.decoded.addresses);
       } else {
           setAddress([]);
@@ -68,6 +72,7 @@ if(number.length==10 && pincode && locality && address.length>0 && city.length>0
   });
   const resp = await reqURL.json();
   setLoading(false);
+  
   if (resp.success) {
     setAuth({ ...auth, token: resp.token });
       SuccessToast("Address added successfully");
@@ -94,7 +99,7 @@ const movetoNext = () =>{
   
     <div className="p-4">
 
-    {address?.length >0?
+    {address.length >0?
   <div className='p-4 bg-white w-1/2 mtb:w-full tb:w-full rounded-lg'>
    
     <h1 className='text-lg'>Saved Address</h1>
@@ -142,21 +147,18 @@ const movetoNext = () =>{
       
 
        </div>
-       {
-        loading ? <button className="w-full disabled:cur mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">
-          <Oval
-                  visible={true}
-                  height="30"
-                  width="30"
-                  color="#FFFFFF"
-                  ariaLabel="oval-loading"
-                  wrapperStyle={{}}
-                  wrapperClass=""
-                  />
-        </button> 
-        : 
-        <button onClick={handleDetSumbit} className="w-full mb-3 flex items-center lm:w-full lm:translate-x-0 justify-center cursor-pointer tb:translate-x-1/2 tb:mt-3 tb:w-1/2 bg-violet-700 rounded-xl text-white py-3 hover:bg-violet-500 transition-all duration-300">  <IoMdAdd className='text-2xl font-bold mr-1'/> Add Address</button>
-       }
+
+       <button disabled={loading} onClick={handleDetSumbit} className={`group mb-3 ${loading?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-rose-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur origin-left hover:decoration-2 hover:text-rose-300 relative bg-neutral-800 py-4 w-full border text-left p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-violet-500 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-rose-300 after:right-8 after:top-3 after:rounded-full after:blur-lg`}>
+        {
+          loading ?  
+          <Oval visible={true} height="30" width="30" color="#FFFFFF" ariaLabel="oval-loading" wrapperStyle={{}} wrapperClass="" /> 
+          : 
+          <>
+          <IoMdAdd className='text-xl mr-2'/>
+          <h1>Add Address</h1>
+          </>
+        }
+       </button>
    
       </form>
     </div>
@@ -173,13 +175,14 @@ function OrderSumAndPayment() {
   const [paymentMode,setpayMode] = useState("")
   const [loading,setLoading] = useState(false)
 
-
   const navigate = useNavigate()
 
   const {selectedAddr,setselecAddr} = useContext(SelectedAddCont)
+  const {paydet,setpayDet} = useContext(PaymentDet)
   const {cartData} = useContext(CartContext)
   const {paymentBox,setPaymentBox} = useContext(PaymentBoxCont)
   const {activeStep,setActiveStep} = useContext(ActiveStepper)
+  const {auth} = useContext(AuthenContext)
 
   let totalPrice = cartData.reduce((acc,curVal)=>(acc+(curVal.price/100*curVal.quantity || curVal.defaultPrice/100*curVal.quantity)),0)
 
@@ -216,7 +219,7 @@ function OrderSumAndPayment() {
       },
       data: data
     }
-
+  
     axios.request(config)
     .then((response) => {
       handleRazorpayScreen(response.data.amount)
@@ -234,6 +237,15 @@ function OrderSumAndPayment() {
       return;
     }
 
+    let now = new Date();
+let hours = now.getHours();
+let minutes = now.getMinutes();
+
+const date = new Date();
+let day = date.getDate();
+let month = date.getMonth() + 1;
+let year = date.getFullYear();
+
     const options = {
       key: 'rzp_test_49UGrKVElzxHaT',
       amount: amount,
@@ -241,11 +253,32 @@ function OrderSumAndPayment() {
       name: "Munch.in",
       description: "Payment to Munch.in",
       image: "https://munch-in-amangupta100s-projects.vercel.app/assets/munchin-high-resolution-logo-transparent-cropped-_kqTsnzF.svg",
-      handler: function (response){
+      handler:async function (response){
         SuccessToast("Payment Successful")
-        navigate("/")
+        navigate("/payment/success")
         setPaymentBox(false)
         setActiveStep(0)
+        setpayDet({...paydet,response,payTime: `${hours-12}:${minutes}` ,payDate:`${day}-${month}-${year}`})
+
+        const req = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/order`, {
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+             id: auth?.user?.id ,
+             methodPay:"Online Mode",
+             payDate:`${day}-${month}-${year}`,amount:totalPrice,
+             Items:cartData
+             })
+        });
+        const res = await req.json()
+        const {success,message} = res
+        if(success){
+        
+        }else{
+          ErrorToast(message)
+        }
       },
       prefill: {
         name: "Munch.in",
@@ -260,23 +293,61 @@ function OrderSumAndPayment() {
     paymentObject.open()
   }
 
-
-  const handlePayMode = (e) =>{
+  const handlePayMode =async (e) =>{
   e.preventDefault();
   
+ if(paymentMode && paymentMode.length>0){
+
   if(paymentMode == "cod"){
-    navigate("/")
+
+    let now = new Date();
+    let hours = now.getHours();
+    let minutes = now.getMinutes();
+    
+    const date = new Date();
+    let day = date.getDate();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
+
+    navigate("/payment/success")
     SuccessToast("Order placed")
     setPaymentBox(false)
+    setpayDet({...paydet,payTime: `${hours-12}:${minutes}` ,payDate:`${day}-${month}-${year}`})
     setActiveStep(0)
+
+    setLoading(true)
+    const req = await fetch(`${import.meta.env.VITE_BACKEND_BASE_URL}/user/order`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+         id: auth?.user?.id ,
+         methodPay:"Cash on delivery",
+         payDate:`${day}-${month}-${year}`,
+         amount:totalPrice,
+         Items:cartData
+         })
+    });
+    const res = await req.json()
+    setLoading(false)
+    const {success,message} = res
+    if(success){
+    
+    }else{
+      ErrorToast(message)
+    }
   }
   else{
 createRazorpayOrder(totalPrice)
   }
 
+ }else{
+  ErrorToast("Select atleast one payment method")
+ }
   }
   return(
-    <div className='w-full mt-8 flex-col bg-violet-100'>
+    <div className={`w-full mt-8 flex-col bg-violet-100`}>
      <div className="w-full px-4 py-4 bg-violet-500">
       <h1 className='text-lg font-semibold text-white'>Order Summary</h1>
     </div>
@@ -391,7 +462,15 @@ cartData.map((elem)=>{
   <h1 className='font-semibold'>Pay Online</h1>
   </label>
 </div>
-<button onClick={handlePayMode} className="mt-8 mb-4 ml-4 cursor-pointer rounded-full flex items-center justify-center hover:bg-violet-500 transition-colors duration-200 ease-in-out py-3 bg-violet-400 text-white w-full"> {loading && <MoonLoader size={16} className='mr-2' />} Confirm</button>
+
+<button disabled={loading} onClick={handlePayMode} className={`group mb-4 mt-6 ${loading?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-rose-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur origin-left hover:decoration-2 hover:text-rose-300 relative bg-neutral-800 py-4 w-[90%] border text-left p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-violet-500 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-rose-300 after:right-8 after:top-3 after:rounded-full after:blur-lg`}>
+        {
+          loading ?  
+          <Oval visible={true} height="30" width="30" color="#FFFFFF" ariaLabel="oval-loading" wrapperStyle={{}} wrapperClass="" /> 
+          : 
+          <h1>Confirm Payment</h1>
+        }
+       </button>
 
 </div>
 
