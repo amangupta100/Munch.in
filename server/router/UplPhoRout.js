@@ -15,7 +15,7 @@ const isImage = (req,file,callback)=>{
     if(file.mimetype.startsWith("image")){
         callback(null,true)
     }else{
-        callback(new Error("only images is allowd"))
+        callback(new Error("only images is allowed"))
     }
 }
 

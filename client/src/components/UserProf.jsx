@@ -56,7 +56,7 @@ export const UserProf = () => {
       sethovClick(false)
     }
     }catch(err){
-      ErrorToast("Error uploading file")
+      ErrorToast(err.message)
     }
     }
 
@@ -157,6 +157,9 @@ export const UserProf = () => {
        <div className='flex relative rounded-xl items-center justify-between w-fit bg-zinc-200 py-3 px-3 mx-auto mt-3 '>
         <IoMdClose onClick={()=>{
           sethovClick(!ishovClick)
+          setFile("")
+          setChLoad(false)
+          setName("")
         }} className='absolute text-xl -top-3 -right-1 cursor-pointer'/>
          <h1 className='inline-block font-bold'> {filename} </h1>
          <button disabled={changeload} onClick={handlePhotoUpload} className='bg-zinc-50 py-2 px-3 ml-5 flex items-center justify-center'> {changeload? <Oval visible={true}

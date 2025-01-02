@@ -176,7 +176,7 @@ export const SignUp = () =>{
         </button>
         <div className="flex mt-3">
         <h1 className="text-sm font-extrabold">Note- </h1>
-        <h1 className="text-sm ml-2">If the response is slow that's because current database server is far away from my current location . Don't worry! under 20second you will get response , once the connection is connected to db server It's fast</h1>
+        <h1 className="text-sm ml-2">Response is slow due to current database server is far away from my current location . Don't worry! under 20second you will get response , once the connection is connected to db server It's fast</h1>
         </div>
 
         </div>
