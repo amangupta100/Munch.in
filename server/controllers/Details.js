@@ -3,9 +3,9 @@ const userModel = require("../model/userModel")
 const cloudinary = require("cloudinary").v2
 
 cloudinary.config({
-    cloud_name:"ddad6pdhx",
-    api_key:"288566453969488",
-    api_secret:"r_lCQy7DoWGzuvBGcZwmEEfed6k"
+    cloud_name:"dbxkt0h5s",
+    api_key:295866792124655,
+    api_secret:"Bi7etzzMCxWXqb0ZMDE_z4-Z-0U"
 })
 
 const genToken = (id,name,addresses,imagePath) =>{
