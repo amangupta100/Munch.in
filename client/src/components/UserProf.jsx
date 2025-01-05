@@ -19,7 +19,7 @@ export const UserProf = () => {
     const [changeload,setChLoad] = useState(false)
     const [ishovClick,sethovClick] = useState(false)
     const [filename,setName] = useState("")
-    const [file,setFile] = useState("")
+    const [file,setFile] = useState(null)
 
     const navigate = useNavigate()
     const fileInputRef = useRef()
@@ -157,7 +157,7 @@ export const UserProf = () => {
        <div className='flex relative rounded-xl items-center justify-between w-fit bg-zinc-200 py-3 px-3 mx-auto mt-3 '>
         <IoMdClose onClick={()=>{
           sethovClick(!ishovClick)
-          setFile("")
+          setFile(null)
           setChLoad(false)
           setName("")
         }} className='absolute text-xl -top-3 -right-1 cursor-pointer'/>
