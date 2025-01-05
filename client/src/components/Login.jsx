@@ -136,7 +136,7 @@ export const Login = () =>{
         </div>
 
         <h1 className="mt-4">Don't have account yet ? <NavLink to="/signUp" className="text-blue-500 ml-1 font-semibold"> SignUp </NavLink> </h1>
-        <button onClick={handleFormSubmit} disabled={loading} className={`group ${loading?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-rose-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur origin-left hover:decoration-2 hover:text-rose-300 relative bg-neutral-800 py-4 w-full border text-left p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-violet-500 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-rose-300 after:right-8 after:top-3 after:rounded-full after:blur-lg`}>
+        <button onClick={handleFormSubmit} disabled={loading} className={`group ${loading?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto duration-500 hover:text-rose-300 hover:rounded-3xl ease-in-out relative bg-neutral-800 py-4 w-full p-3 text-gray-50 text-base font-bold`}>
         {
         loading ? <Oval
         visible={true}
@@ -153,7 +153,7 @@ export const Login = () =>{
         <h1 className="text-lg text-center">Or</h1>
        
         </form>
-        <button onClick={handleGoogleAuth} disabled={loadGoogl} className={`group ${loadGoogl?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto group-hover:before:duration-500 group-hover:after:duration-500 after:duration-500 hover:border-rose-300 hover:before:[box-shadow:_20px_20px_20px_30px_#a21caf] duration-500 before:duration-500 hover:duration-500 hover:after:-right-8 hover:before:right-12 hover:before:-bottom-8 hover:before:blur origin-left hover:decoration-2 hover:text-rose-300 relative bg-neutral-800 py-4 w-full border text-left p-3 text-gray-50 text-base font-bold rounded-lg  overflow-hidden  before:absolute before:w-12 before:h-12 before:content[''] before:right-1 before:top-1 before:z-10 before:bg-violet-500 before:rounded-full before:blur-lg  after:absolute after:z-10 after:w-20 after:h-20 after:content['']  after:bg-rose-300 after:right-8 after:top-3 after:rounded-full after:blur-lg`}>
+        <button onClick={handleGoogleAuth} disabled={loadGoogl} className={`group ${loadGoogl?"cursor-not-allowed bg-neutral-500":null} flex items-center justify-center mx-auto duration-500 hover:text-rose-300 hover:rounded-3xl ease-in-out relative bg-neutral-800 py-4 w-full p-3 text-gray-50 text-base font-bold`}>
        {
         loadGoogl ? <Oval
         visible={true}
@@ -170,7 +170,7 @@ export const Login = () =>{
         </button>
         <div className="flex mt-3">
         <h1 className="text-sm font-extrabold">Note- </h1>
-        <h1 className="text-sm ml-2">Response is slow due to current database server is far away from my current location . Don't worry! under 20second you will get response , once the connection is connected to db server It's fast</h1>
+        <h1 className="text-sm ml-2">Getting response is slow due to current database server is far away from my current location . Don't worry! under 20second you will get response , once the connection is connected to db server It's fast</h1>
         </div>
         </div>
         
