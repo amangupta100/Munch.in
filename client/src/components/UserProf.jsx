@@ -11,6 +11,7 @@ import { Oval } from 'react-loader-spinner';
 import { ProfSkel } from './ProfSkel';
 import { IoMdClose } from "react-icons/io";
 import { ProfileImage } from '../context/ProfileImage';
+import emptyCart from '../assets/empty_cart-C6vwo_M0-Photoroom.png'
 
 export const UserProf = () => {
     const [isActive,setActive] = useState("User Details")
@@ -246,7 +247,11 @@ const Order = ({loading,setLoading}) =>{
       <h1 className='text-center font-extrabold text-2xl'>Orders</h1>
      
       <div className="px-5 mt-5">
-      <h1 className='font-extrabold text-sm mb-3'> {fullDet.length} Orders found </h1>
+     
+     {
+      fullDet && fullDet.length>0 ? 
+      <>
+       <h1 className='font-extrabold text-sm mb-3'> {fullDet.length} Orders found </h1>
        {
         fullDet.map((elem)=>{
           return(
@@ -295,6 +300,13 @@ const Order = ({loading,setLoading}) =>{
           )
         })
        }
+      </> : 
+      <>
+      <h1 className='text-center font-bold text-xl'>No orders found</h1>
+      <img src={emptyCart} className='w-[35%] lm:w-[90%] mb-6 mx-auto' alt="" />
+      </>
+     }
+       
 
       </div>
 

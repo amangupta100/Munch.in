@@ -40,7 +40,7 @@ let finalData = (resp?.data?.cards[0]?.groupedCard?.cardGroupMap?.RESTAURANT?.ca
 
   return (
     <div className='w-full'>
-    <div className="w-[65%] mtb:w-[83%] vlm:w-[90%] mx-auto">
+    <div className="w-[65%] min-h-full mtb:w-[83%] vlm:w-[90%] mx-auto">
 
    <div className="w-full relative mt-8">
    <input value={searchInp} onChange={(e)=>setsrchInp(e.target.value)} type="text" placeholder='Search for Dishes and Restaurant' className='border-2 w-full border-zinc-200 py-3 px-4 focus:outline-none' />

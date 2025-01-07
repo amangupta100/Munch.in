@@ -14,6 +14,7 @@ import { AuthenContext } from '../context/Authen';
 import { SlLogout } from "react-icons/sl";
 import { SuccessToast } from './NotToast';
 import { ProfileImage } from '../context/ProfileImage';
+import { LuExternalLink } from "react-icons/lu";
 
 export const Navbar =() =>{
    const [srcRes,setsearchRes] = useState([])
@@ -151,11 +152,18 @@ export const Navbar =() =>{
                      </div>
                     
                     {
-                     profVis &&  <div onMouseLeave={()=>setProfVis(!profVis)} className="absolute top-10 py-4 px-2 right-0 w-40  bg-zinc-200 rounded-xl">
-                     <NavLink to="/user" className="flex items-center hover:bg-zinc-100 py-2 rounded-lg px-2"><CiUser className='text-2xl'/> <h1 className='ml-2'>User</h1></NavLink>
-                     <button onClick={handleLogout} className=' mt-2 flex items-center hover:bg-zinc-100 py-2 rounded-lg px-2 w-full'>
+                     profVis &&  
+                     <div onMouseLeave={()=>setProfVis(!profVis)} className="absolute top-10 py-4 px-5 right-0 w-52  bg-zinc-200 rounded-xl">
+                     <h1 className='font-extrabold'>My Account</h1>
+                     <div className='flex items-center'>
+                     <h1 className='inline-block'> {auth?.user?.name}</h1>
+                     <NavLink to="/user"><LuExternalLink className='text-xl ml-3'/></NavLink>  
+                     </div>
+                     <hr className='border-zinc-400 mt-1' />
+                     <NavLink to="/user" className="flex items-center mt-3 px-2 hover:bg-zinc-100 py-2 rounded-lg "><CiUser className='text-2xl mr-2'/> <h1>Profile</h1></NavLink>
+                     <button onClick={handleLogout} className=' mt-2 flex px-2 items-center hover:bg-zinc-100 py-2 rounded-lg w-full'>
                         <SlLogout/>
-                     <h1 className='ml-3'>Logout</h1>
+                     <h1 className='ml-2'>Logout</h1>
                      </button>
                   </div>
                     }
