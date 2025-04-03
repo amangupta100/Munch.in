@@ -16,19 +16,20 @@ export const MainPage = () =>{
     const fetchData = async () => {
        const data =await fetch(`${import.meta.env.VITE_FETCH_DATA_URL}/restaurants/list/v5?lat=${lat}&lng=${lng}&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING`)
        const rData =await data.json()
+       console.log(rData)
 
         setHead(rData?.data?.cards[1]?.card?.card?.header?.title)
         setOnlineDel(rData?.data?.cards[2]?.card?.card?.title)
 
         let mainData2 = rData?.data?.cards.find(
-            (data) => data?.card?.card?.id == "restaurant_grid_listing"
+            (data) => data?.card?.card?.id == "restaurant_grid_listing_v2"
         )?.card?.card?.gridElements?.infoWithStyle?.restaurants;
         settopRes( mainData2)
 
-        let onminddata = rData?.data?.cards.find(
-            (data) => data?.card?.card?.id == "whats_on_your_mind"
-        ).card?.card?.imageGridCards?.info;
-        setonyourMind(onminddata)
+        // let onminddata = rData?.data?.cards.find(
+        //     (data) => data?.card?.card?.id == "whats_on_your_mind"
+        // ).card?.card?.imageGridCards?.info;
+        // setonyourMind(onminddata)
     }
 
 
